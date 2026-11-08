@@ -194,3 +194,42 @@
 - **Mã lỗi:**
   - `401 UNAUTHENTICATED`: Chưa đăng nhập
   - `403 FORBIDDEN`: Không có quyền `CATEGORY_VIEW`
+
+### 2.5 POST /api/products
+- **Mô tả:** Tạo sản phẩm mới kèm biến thể gốc, tồn kho ban đầu và lịch sử giá trong một transaction (UC42)
+- **Middleware:** `authenticate`, `protect(PRODUCT_CREATE)`, `validate(createProductSchema, 'body')`, `audit('PRODUCT_CREATE')`
+- **Request Body:**
+  ```json
+  {
+    "code": "SP00001",
+    "name": "Cà phê đen đá",
+    "categoryId": 1,
+    "baseUnit": "Ly",
+    "salePrice": 25000,
+    "barcode": "893500000001",
+    "unitType": "PIECE",
+    "minThreshold": 10
+  }
+  ```
+  *(Các trường bắt buộc: `code`, `name`, `baseUnit`, `salePrice`. `barcode`, `categoryId`, `unitType`, `minThreshold` là tùy chọn)*
+- **Response 201 (Created):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 1,
+      "code": "SP00001",
+      "name": "Cà phê đen đá",
+      "baseVariantId": 1,
+      "salePrice": 25000
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Dữ liệu không hợp lệ (mã sai format, thiếu trường bắt buộc, giá < 0,...)
+  - `400 CATEGORY_INACTIVE`: Danh mục đang ngừng hoạt động
+  - `404 CATEGORY_NOT_FOUND`: Danh mục không tồn tại
+  - `409 PRODUCT_CODE_EXISTS`: Mã sản phẩm đã tồn tại
+  - `409 BARCODE_EXISTS`: Mã vạch đã tồn tại
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_CREATE`

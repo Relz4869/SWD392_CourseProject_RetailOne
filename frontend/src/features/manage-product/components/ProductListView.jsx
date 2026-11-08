@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import PageHeader from '@/shared/components/PageHeader';
 import Pagination from '@/shared/components/Pagination';
 import ErrorMessage from '@/shared/components/ErrorMessage';
@@ -50,9 +51,11 @@ export default function ProductListView({ role, permissions = [] }) {
         title="Danh sách sản phẩm"
         subtitle={data.totalItems ? `${data.totalItems} sản phẩm` : undefined}
         actions={
-          <div>
-            {/* TODO UC42 - only if PRODUCT_CREATE */}
-          </div>
+          permissions.includes('PRODUCT_CREATE') ? (
+            <Link href="/products/new">
+              <Button variant="primary">+ Thêm sản phẩm</Button>
+            </Link>
+          ) : null
         }
       />
 

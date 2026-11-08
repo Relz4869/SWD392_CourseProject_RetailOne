@@ -13,3 +13,9 @@ export async function getProducts(params = {}, options = {}) {
   });
 }
 
+export async function createProduct(data, options = {}) {
+  return apiClient.post('/products', data, {
+    signal: options.signal,
+  });
+}
+

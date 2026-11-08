@@ -2,6 +2,10 @@
 // Luôn trả về instance model qua Model.fromRow(row), không trả row thô.
 // Mọi hàm nhận tham số cuối là tx tùy chọn, dùng request(tx).
 const { sql, request } = require('../../../shared/config/database');
+const Product = require('../models/product.model');
+const ProductVariant = require('../models/productVariant.model');
+const InventoryStock = require('../models/inventoryStock.model');
+const ProductSalePriceHistory = require('../models/productSalePriceHistory.model');
 const ProductListItem = require('../models/productListItem.model');
 
 const ORDER_BY_MAP = Object.freeze({
@@ -14,6 +18,95 @@ const ORDER_BY_MAP = Object.freeze({
 
 function escapeLike(str) {
   return str.replace(/[[%_]/g, '[$&]');
+}
+
+async function existsByCode(code, tx) {
+  const req = await request(tx);
+  req.input('code', sql.VarChar(50), code);
+  const result = await req.query(`
+    SELECT TOP 1 1 AS found FROM dbo.Products WHERE code = @code;
+  `);
+  return Boolean(result.recordset && result.recordset.length > 0);
+}
+
+async function existsBarcode(barcode, tx) {
+  const req = await request(tx);
+  req.input('barcode', sql.VarChar(50), barcode);
+  const result = await req.query(`
+    SELECT TOP 1 1 AS found FROM dbo.ProductVariants WHERE barcode = @barcode;
+  `);
+  return Boolean(result.recordset && result.recordset.length > 0);
+}
+
+async function insertProduct(product, tx) {
+  const req = await request(tx);
+  req.input('code', sql.VarChar(50), product.code);
+  req.input('name', sql.NVarChar(200), product.name);
+  req.input('categoryId', sql.Int, product.categoryId ?? null);
+  req.input('baseUnit', sql.NVarChar(20), product.baseUnit);
+  req.input('allowDecimalQuantity', sql.Bit, product.allowDecimalQuantity ? 1 : 0);
+  req.input('isCombo', sql.Bit, product.isCombo ? 1 : 0);
+  req.input('status', sql.VarChar(20), product.status || 'Selling');
+  req.input('imageUrl', sql.NVarChar(500), product.imageUrl ?? null);
+
+  const result = await req.query(`
+    INSERT INTO dbo.Products (code, name, categoryId, baseUnit, allowDecimalQuantity, isCombo, status, imageUrl)
+    OUTPUT INSERTED.*
+    VALUES (@code, @name, @categoryId, @baseUnit, @allowDecimalQuantity, @isCombo, @status, @imageUrl);
+  `);
+
+  return Product.fromRow(result.recordset[0]);
+}
+
+async function insertVariant(variant, tx) {
+  const req = await request(tx);
+  req.input('productId', sql.BigInt, variant.productId);
+  req.input('unitName', sql.NVarChar(20), variant.unitName);
+  req.input('conversionFactor', sql.Int, variant.conversionFactor ?? 1);
+  req.input('salePrice', sql.Decimal(15, 2), variant.salePrice);
+  req.input('barcode', sql.VarChar(50), variant.barcode || null);
+  req.input('unitType', sql.VarChar(20), variant.unitType || 'PIECE');
+
+  const result = await req.query(`
+    INSERT INTO dbo.ProductVariants (productId, unitName, conversionFactor, salePrice, barcode, unitType)
+    OUTPUT INSERTED.*
+    VALUES (@productId, @unitName, @conversionFactor, @salePrice, @barcode, @unitType);
+  `);
+
+  return ProductVariant.fromRow(result.recordset[0]);
+}
+
+async function insertInventoryStock(stock, tx) {
+  const req = await request(tx);
+  req.input('variantId', sql.Int, stock.variantId);
+  req.input('quantityOnHand', sql.Decimal(15, 3), stock.quantityOnHand ?? 0);
+  req.input('minThreshold', sql.Decimal(15, 3), stock.minThreshold ?? 0);
+
+  const result = await req.query(`
+    INSERT INTO dbo.InventoryStocks (variantId, quantityOnHand, minThreshold)
+    OUTPUT INSERTED.*
+    VALUES (@variantId, @quantityOnHand, @minThreshold);
+  `);
+
+  return InventoryStock.fromRow(result.recordset[0]);
+}
+
+async function insertPriceHistory(history, tx) {
+  const req = await request(tx);
+  req.input('productId', sql.BigInt, history.productId);
+  req.input('variantId', sql.Int, history.variantId);
+  req.input('oldSalePrice', sql.Decimal(15, 2), history.oldSalePrice ?? null);
+  req.input('newSalePrice', sql.Decimal(15, 2), history.newSalePrice);
+  req.input('changedBy', sql.BigInt, history.changedBy ?? null);
+  req.input('changedAt', sql.DateTime2, history.changedAt || new Date());
+
+  const result = await req.query(`
+    INSERT INTO dbo.ProductSalePriceHistories (productId, variantId, oldSalePrice, newSalePrice, changedBy, changedAt)
+    OUTPUT INSERTED.*
+    VALUES (@productId, @variantId, @oldSalePrice, @newSalePrice, @changedBy, @changedAt);
+  `);
+
+  return ProductSalePriceHistory.fromRow(result.recordset[0]);
 }
 
 async function findPaged(filters, tx) {
@@ -100,7 +193,11 @@ async function findPaged(filters, tx) {
 }
 
 module.exports = {
-  // TODO UC42: insert(product, tx)
-  // TODO UC46: updatePrice(variant, history, tx)
+  existsByCode,
+  existsBarcode,
+  insertProduct,
+  insertVariant,
+  insertInventoryStock,
+  insertPriceHistory,
   findPaged,
 };
