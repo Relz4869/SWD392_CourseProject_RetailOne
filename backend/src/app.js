@@ -16,10 +16,10 @@ app.use('/api/categories', require('./components/manage-product').categoryRouter
 app.use('/api/promotions', require('./components/manage-promotion').router);
 app.use('/api/staff', require('./components/manage-staff').router);
 app.use('/api/shifts', require('./components/manage-shift').router);
+app.use('/api/schedules', require('./components/manage-shift').scheduleRouter);
 app.use('/api/cash-handovers', require('./components/cash-handover').router);
 
 app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
-

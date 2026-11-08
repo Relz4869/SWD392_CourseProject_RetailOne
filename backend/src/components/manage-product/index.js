@@ -1,7 +1,7 @@
-// Component: manage-product (UC39, UC42, UC46, UC48).
-// Owns Categories, Products, ProductVariants, ProductSalePriceHistories. InventoryStocks is read-only here.
-const productRouter = require('express').Router();
-const categoryRouter = require('express').Router();
-// TODO UC48 (Phase 4): product list + category options. TODO UC39, UC42, UC46.
-module.exports = { productRouter, categoryRouter };
-
+// Component: manage-product (UC39, UC42, UC46, UC48)
+module.exports = {
+  productRouter: require('./routes/product.routes'),
+  categoryRouter: require('./routes/category.routes'),
+  productService: require('./services/product.service'),
+  categoryService: require('./services/category.service'),
+};

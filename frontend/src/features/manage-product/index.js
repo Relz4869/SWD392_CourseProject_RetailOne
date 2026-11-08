@@ -1,3 +1,2 @@
-﻿// Feature: manage-product (UC48).
-// TODO UC48 (Phase 4): export ProductListView.
+﻿// Owner: PhuNT | UC39, UC42, UC46, UC48
 export {};
