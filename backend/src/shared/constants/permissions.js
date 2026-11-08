@@ -1,0 +1,64 @@
+const { ROLES } = require('./roles');
+
+// Values = dbo.Features.featureKey (spec 5.6).
+const PERMISSIONS = Object.freeze({
+  CATEGORY_VIEW: 'CATEGORY_VIEW',
+  CATEGORY_CREATE: 'CATEGORY_CREATE',
+  PRODUCT_VIEW: 'PRODUCT_VIEW',
+  PRODUCT_CREATE: 'PRODUCT_CREATE',
+  PRODUCT_PRICE_VIEW: 'PRODUCT_PRICE_VIEW',
+  PRODUCT_PRICE_UPDATE: 'PRODUCT_PRICE_UPDATE',
+  PROMOTION_VIEW: 'PROMOTION_VIEW',
+  PROMOTION_CREATE: 'PROMOTION_CREATE',
+  PROMOTION_ASSIGN_PRODUCT: 'PROMOTION_ASSIGN_PRODUCT',
+  PROMOTION_DELETE: 'PROMOTION_DELETE',
+  STAFF_VIEW: 'STAFF_VIEW',
+  STAFF_CREATE: 'STAFF_CREATE',
+  STAFF_CHANGE_STATUS: 'STAFF_CHANGE_STATUS',
+  SHIFT_VIEW: 'SHIFT_VIEW',
+  SHIFT_CREATE: 'SHIFT_CREATE',
+  SCHEDULE_ASSIGN: 'SCHEDULE_ASSIGN',
+  SCHEDULE_CHECK_IN: 'SCHEDULE_CHECK_IN',
+  CASH_HANDOVER_CREATE: 'CASH_HANDOVER_CREATE',
+  CASH_HANDOVER_REPORT: 'CASH_HANDOVER_REPORT',
+});
+
+// Used by the seed for dbo.Features.description.
+const PERMISSION_DESCRIPTIONS = Object.freeze({
+  CATEGORY_VIEW: 'Xem danh mục',
+  CATEGORY_CREATE: 'Tạo danh mục (UC39)',
+  PRODUCT_VIEW: 'Xem danh sách sản phẩm (UC48)',
+  PRODUCT_CREATE: 'Tạo sản phẩm (UC42)',
+  PRODUCT_PRICE_VIEW: 'Xem giá bán',
+  PRODUCT_PRICE_UPDATE: 'Cập nhật giá bán (UC46)',
+  PROMOTION_VIEW: 'Xem khuyến mãi',
+  PROMOTION_CREATE: 'Tạo khuyến mãi (UC53)',
+  PROMOTION_ASSIGN_PRODUCT: 'Gán sản phẩm vào khuyến mãi (UC54)',
+  PROMOTION_DELETE: 'Xóa khuyến mãi (UC56)',
+  STAFF_VIEW: 'Xem nhân viên',
+  STAFF_CREATE: 'Tạo nhân viên (UC64)',
+  STAFF_CHANGE_STATUS: 'Khóa/mở tài khoản nhân viên (UC66)',
+  SHIFT_VIEW: 'Xem ca làm',
+  SHIFT_CREATE: 'Tạo ca làm (UC75)',
+  SCHEDULE_ASSIGN: 'Phân ca (UC81)',
+  SCHEDULE_CHECK_IN: 'Chấm công vào ca (UC73)',
+  CASH_HANDOVER_CREATE: 'Bàn giao tiền cuối ca (UC82)',
+  CASH_HANDOVER_REPORT: 'Báo cáo bàn giao tiền (UC83)',
+});
+
+const ALL = Object.values(PERMISSIONS);
+const P = PERMISSIONS;
+
+// NFR RBAC: Warehouse must not see prices, revenue or HR data.
+const ROLE_PERMISSIONS = Object.freeze({
+  [ROLES.MANAGER]: Object.freeze(
+    ALL.filter((k) => k !== P.SCHEDULE_CHECK_IN && k !== P.CASH_HANDOVER_CREATE),
+  ),
+  [ROLES.CASHIER]: Object.freeze([
+    P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.PRODUCT_PRICE_VIEW, P.SCHEDULE_CHECK_IN, P.CASH_HANDOVER_CREATE,
+  ]),
+  [ROLES.WAREHOUSE]: Object.freeze([P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.SCHEDULE_CHECK_IN]),
+});
+
+module.exports = { PERMISSIONS, PERMISSION_DESCRIPTIONS, ROLE_PERMISSIONS };
+
