@@ -1,6 +1,7 @@
-import ComingSoon from '@/shared/components/ComingSoon';
+import {StaffListView} from '@/features/manage-staff';
+import RequireAuth from '@/features/auth/components/RequireAuth';
 
 export default function StaffPage() {
-  return <ComingSoon title="Nhân viên" owner="MaiCT" ucs="UC64, UC66" />;
+  return <RequireAuth permission="STAFF_VIEW"><StaffListView/></RequireAuth>;
 }
 

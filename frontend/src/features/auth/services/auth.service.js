@@ -7,3 +7,5 @@ export async function login(username, password) {
 export async function getMe() {
   return apiClient.get('/auth/me');
 }
+
+export const changePassword = (data) => apiClient.post('/auth/change-password',data);

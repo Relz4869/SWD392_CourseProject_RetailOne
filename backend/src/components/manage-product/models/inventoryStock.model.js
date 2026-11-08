@@ -10,7 +10,6 @@ class InventoryStock extends BaseModel {
     minThreshold:   { type: sql.Decimal(15, 3) },
   });
 
-  /** UC48 */
   isOutOfStock() {
     return Number(this.quantityOnHand) <= 0;
   }

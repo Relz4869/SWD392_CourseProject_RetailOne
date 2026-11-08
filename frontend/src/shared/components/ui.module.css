@@ -121,6 +121,7 @@
 .pageHeader {
   display: flex;
   align-items: flex-end;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
@@ -129,7 +130,7 @@
 .pageTitle {
   margin: 0;
   font-size: 24px;
-  line-height: 32px;
+  line-height: 36px;
   font-weight: 600;
   color: var(--brand-700);
 }
@@ -262,6 +263,9 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+.pageBtn:active:not(:disabled) { transform: scale(0.95); }
+@media (max-width: 767px) { .btn, .pageBtn { min-height: 44px; } }
 
 .pageActive {
   background: var(--brand-600);
