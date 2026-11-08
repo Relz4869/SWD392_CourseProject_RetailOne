@@ -29,12 +29,36 @@ const createProductSchema = Object.freeze({
   minThreshold: { type: 'number', min: 0 },
 });
 
+const updatePriceSchema = Object.freeze({
+  salePrice: { type: 'number', required: true, min: 0 },
+});
+
 // UC48: GET /api/products
 router.get('/', authenticate, protect(PERMISSIONS.PRODUCT_VIEW), validate(listQuerySchema, 'query'), productController.list);
 
 // UC42: POST /api/products
 router.post('/', authenticate, protect(PERMISSIONS.PRODUCT_CREATE), validate(createProductSchema, 'body'), audit('PRODUCT_CREATE'), productController.create);
-// TODO UC46: GET /:id/variants/:variantId/price -> productController.getPrice
-// TODO UC46: PUT /:id/variants/:variantId/price -> productController.updatePrice
+
+// UC46: GET /api/products/:id/variants/:variantId/price & /api/products/:id/price
+router.get('/:id/variants/:variantId/price', authenticate, protect(PERMISSIONS.PRODUCT_PRICE_VIEW), productController.getPrice);
+router.get('/:id/price', authenticate, protect(PERMISSIONS.PRODUCT_PRICE_VIEW), productController.getPrice);
+
+// UC46: PUT /api/products/:id/variants/:variantId/price & /api/products/:id/price
+router.put(
+  '/:id/variants/:variantId/price',
+  authenticate,
+  protect(PERMISSIONS.PRODUCT_PRICE_UPDATE),
+  validate(updatePriceSchema, 'body'),
+  audit('PRICE_UPDATE'),
+  productController.updatePrice
+);
+router.put(
+  '/:id/price',
+  authenticate,
+  protect(PERMISSIONS.PRODUCT_PRICE_UPDATE),
+  validate(updatePriceSchema, 'body'),
+  audit('PRICE_UPDATE'),
+  productController.updatePrice
+);
 
 module.exports = router;

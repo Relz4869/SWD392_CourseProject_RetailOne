@@ -1,0 +1,286 @@
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--brand-600);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+  width: fit-content;
+  transition: color var(--t-fast);
+}
+
+.backLink:hover {
+  color: var(--brand-700);
+  text-decoration: underline;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.productHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.productName {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  color: var(--ink-900);
+  margin: 0;
+}
+
+.productMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-600);
+}
+
+.productCode {
+  font-family: var(--font-mono);
+  color: var(--ink-600);
+  letter-spacing: 0.5px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgeSelling {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.badgeStopSelling {
+  background: var(--surface-3);
+  color: var(--ink-600);
+}
+
+.badgeSuspended {
+  background: var(--gold-bg);
+  color: var(--gold-text);
+}
+
+.priceSection {
+  margin-top: var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.currentPriceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.currentPriceLabel {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--ink-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.currentPriceValue {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+  color: var(--brand-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.updateForm {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-4);
+  min-width: 340px;
+  max-width: 440px;
+}
+
+.updateFormTitle {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--ink-900);
+  margin: 0 0 var(--space-3);
+}
+
+.updateInputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.inputPrice {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink-900);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--t-fast);
+}
+
+.inputPrice:focus {
+  border-color: var(--brand-600);
+  outline: none;
+}
+
+.diffContainer {
+  margin-top: var(--space-2);
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.diffPositive {
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.diffNegative {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.diffUnchanged {
+  color: var(--ink-400);
+}
+
+.alertSuccess {
+  margin-top: var(--space-3);
+  padding: 8px 12px;
+  background: var(--brand-50);
+  color: var(--brand-700);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.alertError {
+  margin-top: var(--space-3);
+  padding: 8px 12px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.historySection {
+  margin-top: var(--space-4);
+}
+
+.historyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--ink-900);
+  margin: 0 0 var(--space-3);
+}
+
+.tableWrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  background: var(--surface-3);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--ink-900);
+  height: 44px;
+  white-space: nowrap;
+}
+
+.table td {
+  height: 48px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-900);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.alignRight {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.boldPrice {
+  font-weight: 600;
+}
+
+.timeCell {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-600);
+}
+

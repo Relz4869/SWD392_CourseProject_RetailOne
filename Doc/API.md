@@ -233,3 +233,79 @@
   - `409 BARCODE_EXISTS`: Mã vạch đã tồn tại
   - `401 UNAUTHENTICATED`: Chưa đăng nhập
   - `403 FORBIDDEN`: Không có quyền `PRODUCT_CREATE`
+
+### 2.6 GET /api/products/:id/variants/:variantId/price
+- **Mô tả:** Xem giá bán hiện tại của biến thể và lịch sử thay đổi giá tối đa 20 dòng gần nhất (UC46). Hỗ trợ alias `/api/products/:id/price` để xem biến thể gốc.
+- **Middleware:** `authenticate`, `protect(PRODUCT_PRICE_VIEW)`
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "product": {
+        "id": 1,
+        "code": "SP00001",
+        "name": "Cà phê đen đá",
+        "status": "Selling"
+      },
+      "variant": {
+        "id": 1,
+        "unitName": "Ly",
+        "conversionFactor": 1,
+        "salePrice": 25000,
+        "barcode": "893500000001"
+      },
+      "history": [
+        {
+          "oldSalePrice": 20000,
+          "newSalePrice": 25000,
+          "changedAt": "2026-11-09T03:00:00.000Z",
+          "changedByName": "Nguyễn Văn Quản Lý"
+        }
+      ]
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `404 PRODUCT_NOT_FOUND`: Sản phẩm không tồn tại
+  - `404 VARIANT_NOT_FOUND`: Biến thể không tồn tại hoặc không thuộc sản phẩm
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_PRICE_VIEW`
+
+### 2.7 PUT /api/products/:id/variants/:variantId/price
+- **Mô tả:** Cập nhật giá bán mới cho biến thể và ghi nhận lịch sử thay đổi trong transaction (UC46). Hỗ trợ alias `/api/products/:id/price` cho biến thể gốc.
+- **Middleware:** `authenticate`, `protect(PRODUCT_PRICE_UPDATE)`, `validate(updatePriceSchema, 'body')`, `audit('PRICE_UPDATE')`
+- **Request Body:**
+  ```json
+  {
+    "salePrice": 28000
+  }
+  ```
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "variant": {
+        "id": 1,
+        "productId": 1,
+        "unitName": "Ly",
+        "conversionFactor": 1,
+        "salePrice": 28000,
+        "barcode": "893500000001"
+      },
+      "newHistoryEntry": {
+        "oldSalePrice": 25000,
+        "newSalePrice": 28000,
+        "changedAt": "2026-11-09T03:15:00.000Z",
+        "changedByName": "Nguyễn Văn Quản Lý"
+      }
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Giá bán không hợp lệ (thiếu hoặc < 0)
+  - `400 PRICE_UNCHANGED`: Giá mới trùng với giá hiện tại
+  - `404 VARIANT_NOT_FOUND`: Biến thể không tồn tại hoặc không thuộc sản phẩm
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_PRICE_UPDATE`

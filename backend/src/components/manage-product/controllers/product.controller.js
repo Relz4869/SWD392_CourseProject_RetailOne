@@ -16,9 +16,26 @@ const list = asyncHandler(async (req, res) => {
   return paged(res, result);
 });
 
+const getPrice = asyncHandler(async (req, res) => {
+  const result = await productService.getPrice({
+    productId: req.params.id,
+    variantId: req.params.variantId,
+  });
+  return ok(res, result);
+});
+
+const updatePrice = asyncHandler(async (req, res) => {
+  const result = await productService.updatePrice({
+    productId: req.params.id,
+    variantId: req.params.variantId,
+    salePrice: req.body.salePrice,
+  }, req.user);
+  return ok(res, result);
+});
+
 module.exports = {
   create,
-  getPrice: asyncHandler(async () => notImplemented('UC46')),
-  updatePrice: asyncHandler(async () => notImplemented('UC46')),
+  getPrice,
+  updatePrice,
   list,
 };

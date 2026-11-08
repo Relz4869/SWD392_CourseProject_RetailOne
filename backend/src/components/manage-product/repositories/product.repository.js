@@ -192,6 +192,88 @@ async function findPaged(filters, tx) {
   return { items, totalItems };
 }
 
+async function findProductById(productId, tx) {
+  const req = await request(tx);
+  req.input('productId', sql.BigInt, productId);
+  const result = await req.query(`
+    SELECT TOP 1 * FROM dbo.Products WHERE id = @productId;
+  `);
+  if (!result.recordset || result.recordset.length === 0) return null;
+  return Product.fromRow(result.recordset[0]);
+}
+
+async function findVariantById(variantId, tx) {
+  const req = await request(tx);
+  req.input('variantId', sql.Int, variantId);
+  const result = await req.query(`
+    SELECT TOP 1 * FROM dbo.ProductVariants WHERE id = @variantId;
+  `);
+  if (!result.recordset || result.recordset.length === 0) return null;
+  return ProductVariant.fromRow(result.recordset[0]);
+}
+
+async function findBaseVariantByProductId(productId, tx) {
+  const req = await request(tx);
+  req.input('productId', sql.BigInt, productId);
+  const result = await req.query(`
+    SELECT TOP 1 * FROM dbo.ProductVariants WHERE productId = @productId AND conversionFactor = 1;
+  `);
+  if (!result.recordset || result.recordset.length === 0) return null;
+  return ProductVariant.fromRow(result.recordset[0]);
+}
+
+async function findPriceHistoryByVariantId(variantId, limit = 20, tx) {
+  const req = await request(tx);
+  req.input('variantId', sql.Int, variantId);
+  req.input('limit', sql.Int, limit);
+  const result = await req.query(`
+    SELECT TOP (@limit)
+      h.id,
+      h.productId,
+      h.variantId,
+      h.oldSalePrice,
+      h.newSalePrice,
+      h.changedAt,
+      h.changedBy,
+      s.fullName AS changedByName
+    FROM dbo.ProductSalePriceHistories h
+    LEFT JOIN dbo.Staff s ON s.id = h.changedBy
+    WHERE h.variantId = @variantId
+    ORDER BY h.changedAt DESC, h.id DESC;
+  `);
+  return (result.recordset || []).map((r) => ({
+    oldSalePrice: r.oldSalePrice != null ? Number(r.oldSalePrice) : null,
+    newSalePrice: r.newSalePrice != null ? Number(r.newSalePrice) : null,
+    changedAt: r.changedAt,
+    changedByName: r.changedByName || 'Hệ thống',
+  }));
+}
+
+async function updateVariantPrice(variantId, salePrice, tx) {
+  const req = await request(tx);
+  req.input('variantId', sql.Int, variantId);
+  req.input('salePrice', sql.Decimal(15, 2), salePrice);
+  const result = await req.query(`
+    UPDATE dbo.ProductVariants
+    SET salePrice = @salePrice
+    OUTPUT INSERTED.*
+    WHERE id = @variantId;
+  `);
+  if (!result.recordset || result.recordset.length === 0) return null;
+  return ProductVariant.fromRow(result.recordset[0]);
+}
+
+async function findStaffNameById(staffId, tx) {
+  if (!staffId) return 'Hệ thống';
+  const req = await request(tx);
+  req.input('staffId', sql.BigInt, staffId);
+  const result = await req.query(`
+    SELECT TOP 1 fullName FROM dbo.Staff WHERE id = @staffId;
+  `);
+  if (!result.recordset || result.recordset.length === 0) return 'Quản trị viên';
+  return result.recordset[0].fullName || 'Quản trị viên';
+}
+
 module.exports = {
   existsByCode,
   existsBarcode,
@@ -200,4 +282,10 @@ module.exports = {
   insertInventoryStock,
   insertPriceHistory,
   findPaged,
+  findProductById,
+  findVariantById,
+  findBaseVariantByProductId,
+  findPriceHistoryByVariantId,
+  updateVariantPrice,
+  findStaffNameById,
 };
