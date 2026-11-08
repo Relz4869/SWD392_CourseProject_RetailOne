@@ -164,3 +164,4 @@ Giao diện phục vụ môi trường làm việc thu ngân / nhân viên kho 8
 ### 4.8 Quy tắc CSS Modules
 - Mọi component bắt buộc dùng biến `var(--...)`.
 - Tuyệt đối không viết mã màu trực tiếp (hex `#...`) trong các file `.module.css`.
+
