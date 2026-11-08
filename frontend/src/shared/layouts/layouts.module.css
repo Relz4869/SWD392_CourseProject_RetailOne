@@ -1,81 +1,145 @@
+/* Layouts Styles - RetailOne POS */
+
 .authPage {
   min-height: 100vh;
   display: flex;
+  background: var(--canvas);
+}
+
+.authHero {
+  flex: 0 0 40%;
+  background: var(--brand-900);
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #16213a 0%, #1f6feb 100%);
+  padding: var(--space-7) var(--space-6);
 }
+
+.authHeroContent {
+  max-width: 360px;
+}
+
+.heroBrand {
+  margin: 0 0 var(--space-3);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  color: var(--ink-on-dark);
+}
+
+.heroTagline {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--ink-on-dark-soft);
+}
+
+.authFormSide {
+  flex: 0 0 60%;
+  background: var(--canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7) var(--space-6);
+}
+
 .authCard {
   width: 100%;
   max-width: 400px;
-  padding: 32px;
-  border-radius: 12px;
-  background: var(--color-surface);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: var(--space-6);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
 }
+
 .brand {
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-2);
   font-size: 24px;
-  text-align: center;
-}
-.brandSub {
-  margin: 0 0 24px;
-  color: var(--color-muted);
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--brand-700);
   text-align: center;
 }
 
+.brandSub {
+  margin: 0 0 var(--space-5);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-600);
+  text-align: center;
+}
+
+/* Shell & Navigation */
 .shell {
   display: flex;
   min-height: 100vh;
+  background: var(--canvas);
 }
+
 .sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: var(--color-sidebar);
-  color: #cbd5e1;
-  padding: 16px 0;
+  background: var(--brand-900);
+  color: var(--ink-on-dark);
+  padding: var(--space-5) 0;
 }
+
 .sidebarBrand {
-  padding: 0 20px 16px;
+  padding: 0 var(--space-5) var(--space-5);
   font-size: 18px;
+  line-height: 26px;
   font-weight: 700;
-  color: #fff;
+  color: var(--ink-on-dark);
 }
+
 .menu {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
 .menuItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 20px;
-  color: #cbd5e1;
+  padding: 12px var(--space-5);
+  color: var(--ink-on-dark-soft);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  transition: background var(--t-fast), color var(--t-fast);
 }
-.menuItem:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+
+.menuItem:hover:not(.menuDisabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-on-dark);
 }
+
 .menuActive {
-  background: rgba(31, 111, 235, 0.35);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--ink-on-dark);
   font-weight: 600;
+  border-left: 3px solid var(--brand-600);
 }
+
 .menuDisabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
+
 .menuDisabled:hover {
   background: transparent;
-  color: #cbd5e1;
+  color: var(--ink-on-dark-soft);
 }
+
 .soon {
   font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 10px;
+  padding: 2px 8px;
+  border-radius: var(--r-btn);
   background: rgba(255, 255, 255, 0.12);
+  color: var(--ink-on-dark);
 }
 
 .main {
@@ -83,37 +147,76 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  background: var(--canvas);
 }
+
 .header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 16px;
+  gap: var(--space-4);
   height: 56px;
-  padding: 0 24px;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-}
-.userInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.2;
-}
-.userName {
-  font-weight: 600;
-}
-.userRole {
-  font-size: 12px;
-  color: var(--color-muted);
-}
-.banner {
-  padding: 10px 24px;
-  background: var(--color-warning-bg);
-  color: #6b4d00;
-  border-bottom: 1px solid #eedc82;
-}
-.content {
-  padding: 24px;
+  padding: 0 var(--space-5);
+  background: var(--surface);
+  box-shadow: var(--shadow-nav);
+  border-bottom: 1px solid var(--border);
 }
 
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-900);
+}
+
+.roleChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.roleManager {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.roleCashier {
+  background: var(--surface-2);
+  color: var(--ink-900);
+}
+
+.roleWarehouse {
+  background: var(--gold-bg);
+  color: var(--gold-text);
+}
+
+.roleDefault {
+  background: var(--surface-2);
+  color: var(--ink-600);
+}
+
+.banner {
+  padding: 10px var(--space-5);
+  background: var(--gold-bg);
+  color: var(--gold-text);
+  border-bottom: 1px solid var(--gold);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.content {
+  padding: var(--space-5);
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}

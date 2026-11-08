@@ -2,108 +2,117 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=latin,latin-ext,vietnamese');
 
 :root {
-  /* 2. Color Palette */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* =========================================================================
+     1. Brand Colors (Warm Green Palette)
+     ========================================================================= */
+  --brand-900: #1E3932;   /* Nền thanh bên, dải tối */
+  --brand-700: #006241;   /* Tiêu đề trang, tên hệ thống */
+  --brand-600: #00754A;   /* Nút chính, viền focus, liên kết */
+  --brand-50:  #d4e9e2;   /* Nền nhãn "Đang bán", nền dòng được chọn */
 
-  --color-neutral-0: #ffffff;
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cbd5e1;
-  --color-neutral-400: #94a3b8;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
-  --color-neutral-800: #1e293b;
-  --color-neutral-900: #0f172a;
+  /* =========================================================================
+     2. Canvas & Surface (Solid Colors, No Gradients)
+     ========================================================================= */
+  --canvas:    #f2f0eb;   /* Nền trang, kem ấm (KHÔNG dùng trắng làm nền trang) */
+  --surface:   #ffffff;   /* Thẻ, bảng, ô nhập */
+  --surface-2: #f9f9f9;   /* Dòng bảng khi rê chuột, nền thanh lọc */
+  --surface-3: #edebe9;   /* Nền hàng tiêu đề bảng */
+  --border:    #e7e7e7;   /* Kẻ ngang trong bảng, viền thẻ */
+  --border-strong: #828A8D; /* Viền ô nhập, viền nút phụ (tương phản 3.5:1 đạt WCAG) */
 
-  --color-success-50: #f0fdf4;
-  --color-success-500: #22c55e;
-  --color-success-700: #15803d;
+  /* =========================================================================
+     3. Ink & Typography Colors
+     ========================================================================= */
+  --ink-900:   rgba(0, 0, 0, 0.87);
+  --ink-600:   rgba(0, 0, 0, 0.58);
+  --ink-400:   rgba(0, 0, 0, 0.38); /* Chữ gợi ý và trạng thái vô hiệu */
+  --ink-on-dark:      #ffffff;
+  --ink-on-dark-soft: rgba(255, 255, 255, 0.70);
 
-  --color-warning-50: #fffbeb;
-  --color-warning-500: #f59e0b;
-  --color-warning-700: #b45309;
+  /* =========================================================================
+     4. Semantic & Accent Colors
+     ========================================================================= */
+  --danger:    #c82014;
+  --danger-bg: #fdecea;
+  --gold:      #cba258;   /* CHỈ dùng trên nền tối hoặc làm viền trang trí */
+  --gold-text: #8A6414;   /* Chữ vàng trên nền sáng (tương phản 5.4:1 đạt WCAG) */
+  --gold-bg:   #faf6ee;
 
-  --color-danger-50: #fef2f2;
-  --color-danger-500: #ef4444;
-  --color-danger-700: #b91c1c;
+  /* =========================================================================
+     5. Border Radius
+     ========================================================================= */
+  --r-sm: 4px;     /* Nhãn trạng thái, ô đánh dấu */
+  --r-md: 8px;     /* Ô nhập, hộp chọn */
+  --r-lg: 12px;    /* Thẻ, bảng, hộp thoại */
+  --r-btn: 999px;  /* NÚT dạng viên thuốc bo tròn hết */
+  --r-full: 50%;   /* Biểu tượng tròn, ảnh đại diện */
 
-  --color-bg-app: var(--color-neutral-50);
-  --color-bg-surface: var(--color-neutral-0);
-  --color-bg-subtle: var(--color-neutral-100);
+  /* =========================================================================
+     6. Shadows (Layered stacks, whisper-soft)
+     ========================================================================= */
+  --shadow-card: 0 0 0.5px rgba(0, 0, 0, 0.14), 0 1px 1px rgba(0, 0, 0, 0.24);
+  --shadow-nav:  0 1px 3px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.07);
+  --shadow-pop:  0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
 
-  --color-text-main: var(--color-neutral-900);
-  --color-text-muted: var(--color-neutral-500);
-  --color-text-inverse: var(--color-neutral-0);
+  /* =========================================================================
+     7. Transitions
+     ========================================================================= */
+  --t-fast: 120ms ease-out;
+  --t-base: 200ms ease-out;
 
-  --color-border: var(--color-neutral-200);
-  --color-border-hover: var(--color-neutral-300);
-
-  /* 3. Typography */
+  /* =========================================================================
+     8. Typography Tokens
+     ========================================================================= */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --text-xs: 0.75rem;     /* 12px */
-  --text-sm: 0.875rem;    /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;    /* 18px */
-  --text-xl: 1.25rem;     /* 20px */
-  --text-2xl: 1.5rem;     /* 24px */
+  /* =========================================================================
+     9. Spacing Scale: 4, 8, 12, 16, 24, 32, 48 px
+     ========================================================================= */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
 
-  --font-regular: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  --font-bold: 700;
-
-  /* 4. Spacing, Radius, Shadow */
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
-
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-
-  /* Legacy aliases mapped to tokens */
-  --color-bg: var(--color-bg-app);
-  --color-surface: var(--color-bg-surface);
-  --color-text: var(--color-text-main);
-  --color-muted: var(--color-text-muted);
-  --color-primary: var(--color-primary-600);
-  --color-primary-dark: var(--color-primary-700);
-  --color-danger: var(--color-danger-700);
-  --color-success: var(--color-success-700);
-  --color-warning: var(--color-warning-700);
-  --color-warning-bg: var(--color-warning-50);
-  --color-sidebar: var(--color-neutral-900);
-  --radius: var(--radius-lg);
-  --shadow: var(--shadow-sm);
-  --font: var(--font-sans);
+  /* Aliases mapped to warm tokens */
+  --color-primary: var(--brand-600);
+  --color-primary-dark: var(--brand-700);
+  --color-primary-600: var(--brand-600);
+  --color-primary-700: var(--brand-700);
+  --color-bg-app: var(--canvas);
+  --color-bg-surface: var(--surface);
+  --color-bg-subtle: var(--surface-2);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-strong);
+  --color-text-main: var(--ink-900);
+  --color-text-muted: var(--ink-600);
+  --color-text: var(--ink-900);
+  --color-muted: var(--ink-600);
+  --color-sidebar: var(--brand-900);
+  --color-danger: var(--danger);
+  --color-danger-700: var(--danger);
+  --color-danger-50: var(--danger-bg);
+  --color-warning-50: var(--gold-bg);
+  --color-warning-700: var(--gold-text);
+  --color-warning-bg: var(--gold-bg);
+  --radius: var(--r-md);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-full: var(--r-btn);
+  --shadow: var(--shadow-card);
+  --shadow-sm: var(--shadow-card);
+  --shadow-md: var(--shadow-nav);
+  --shadow-lg: var(--shadow-pop);
+  --transition-fast: var(--t-fast);
+  --transition-base: var(--t-base);
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
 }
 
 /* Reset mặc định */
@@ -114,18 +123,45 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-bg-app);
-  color: var(--color-text-main);
+  background-color: var(--canvas);
+  color: var(--ink-900);
   font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 5.2 Accessibility Focus Outline */
+/* Focus Outline toàn hệ thống */
 :focus-visible {
-  outline: 2px solid var(--color-primary-600);
+  outline: 2px solid var(--brand-600);
   outline-offset: 2px;
+}
+
+/* Ô nhập dùng chung */
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink-900);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.input:focus {
+  border-color: var(--brand-600);
+  outline: none;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+  background-color: var(--danger-bg);
 }
 
 @media (prefers-reduced-motion: reduce) {
