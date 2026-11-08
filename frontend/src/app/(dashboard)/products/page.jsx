@@ -1,7 +1,9 @@
-import PageHeader from '@/shared/components/PageHeader';
+'use client';
 
-// Placeholder. TODO UC48 (Phase 4): <ProductListView /> from features/manage-product.
+import { useAuth } from '@/features/auth';
+import { ProductListView } from '@/features/manage-product';
+
 export default function ProductsPage() {
-  return <PageHeader title="Danh sách sản phẩm" subtitle="Sẽ được hoàn thiện ở UC48." />;
+  const { user, permissions } = useAuth();
+  return <ProductListView role={user?.role} permissions={permissions} />;
 }
-

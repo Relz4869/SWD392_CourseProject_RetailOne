@@ -1,29 +1,36 @@
 const { sql } = require('../../../shared/config/database');
 const BaseModel = require('../../../shared/models/BaseModel');
+const { ROLES } = require('../../../shared/constants/roles');
+
+const WAREHOUSE_FIELDS = Object.freeze([
+  'id', 'code', 'name', 'category', 'baseUnit',
+  'baseVariantId', 'barcode', 'stockInBaseUnit', 'outOfStock', 'status',
+]);
+
+const WAREHOUSE_SORTABLE = Object.freeze(['name', 'code', 'createdAt', 'stock']);
 
 class ProductListItem extends BaseModel {
   // Read model, no TABLE
 
   static FIELDS_BY_ROLE = Object.freeze({
-    Manager: Object.freeze([
+    [ROLES.MANAGER]: Object.freeze([
       'id', 'code', 'name', 'imageUrl', 'category', 'baseUnit',
       'baseVariantId', 'salePrice', 'barcode', 'stockInBaseUnit',
       'outOfStock', 'variantCount', 'status', 'createdAt',
     ]),
-    Cashier: Object.freeze([
+    [ROLES.CASHIER]: Object.freeze([
       'id', 'code', 'name', 'category', 'baseUnit',
       'baseVariantId', 'salePrice', 'barcode', 'stockInBaseUnit', 'outOfStock',
     ]),
-    Warehouse: Object.freeze([
-      'id', 'code', 'name', 'category', 'baseUnit',
-      'baseVariantId', 'barcode', 'stockInBaseUnit', 'outOfStock', 'status',
-    ]),
+    [ROLES.WAREHOUSE]: WAREHOUSE_FIELDS,
+    Warehouse: WAREHOUSE_FIELDS,
   });
 
   static SORTABLE_BY_ROLE = Object.freeze({
-    Manager: Object.freeze(['name', 'code', 'createdAt', 'salePrice', 'stock']),
-    Cashier: Object.freeze(['name', 'code', 'createdAt', 'salePrice', 'stock']),
-    Warehouse: Object.freeze(['name', 'code', 'createdAt', 'stock']),
+    [ROLES.MANAGER]: Object.freeze(['name', 'code', 'createdAt', 'salePrice', 'stock']),
+    [ROLES.CASHIER]: Object.freeze(['name', 'code', 'createdAt', 'salePrice', 'stock']),
+    [ROLES.WAREHOUSE]: WAREHOUSE_SORTABLE,
+    Warehouse: WAREHOUSE_SORTABLE,
   });
 
   static COLUMNS = Object.freeze({
@@ -44,11 +51,11 @@ class ProductListItem extends BaseModel {
   });
 
   static forcedStatus(role) {
-    return role === 'Cashier' ? 'Selling' : null;
+    return role === ROLES.CASHIER ? 'Selling' : null;
   }
 
   static canFilterByStatus(role) {
-    return role === 'Manager' || role === 'Warehouse';
+    return role === ROLES.MANAGER || role === ROLES.WAREHOUSE || role === 'Warehouse';
   }
 
   static canSortBy(role, sortBy) {
@@ -66,13 +73,13 @@ class ProductListItem extends BaseModel {
 
   toDTO(role) {
     const full = {
-      id: this.id,
+      id: Number(this.id),
       code: this.code,
       name: this.name,
       imageUrl: this.imageUrl ?? null,
-      category: this.categoryId ? { id: this.categoryId, name: this.categoryName } : null,
+      category: this.categoryId ? { id: Number(this.categoryId), name: this.categoryName } : null,
       baseUnit: this.baseUnit,
-      baseVariantId: this.baseVariantId,
+      baseVariantId: this.baseVariantId ? Number(this.baseVariantId) : null,
       salePrice: this.salePrice !== null && this.salePrice !== undefined ? Number(this.salePrice) : null,
       barcode: this.barcode ?? null,
       stockInBaseUnit: Number(this.stockInBaseUnit ?? 0),
@@ -82,7 +89,7 @@ class ProductListItem extends BaseModel {
       createdAt: this.createdAt,
     };
 
-    const allowed = ProductListItem.FIELDS_BY_ROLE[role] || ProductListItem.FIELDS_BY_ROLE.Manager;
+    const allowed = ProductListItem.FIELDS_BY_ROLE[role] || ProductListItem.FIELDS_BY_ROLE[ROLES.MANAGER];
     const dto = {};
     for (const key of allowed) {
       dto[key] = full[key];
@@ -92,4 +99,3 @@ class ProductListItem extends BaseModel {
 }
 
 module.exports = ProductListItem;
-
