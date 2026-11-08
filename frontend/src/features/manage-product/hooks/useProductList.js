@@ -87,7 +87,16 @@ export function useProductList(role) {
         }
       } catch (err) {
         if (err.name !== 'CanceledError' && err.code !== 'ERR_CANCELED') {
-          setError(err.message || 'Không thể tải danh sách sản phẩm');
+          let msg = err.message || 'Không thể tải danh sách sản phẩm';
+          if (err.details && typeof err.details === 'object') {
+            const detailStr = Object.entries(err.details)
+              .map(([field, errText]) => `${field}: ${errText}`)
+              .join(', ');
+            if (detailStr) {
+              msg = `${msg} (${detailStr})`;
+            }
+          }
+          setError(msg);
         }
       } finally {
         if (abortControllerRef.current === controller) {

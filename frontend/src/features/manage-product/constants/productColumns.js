@@ -8,7 +8,6 @@ export const ALL_COLUMNS = [
   {
     key: 'imageUrl',
     title: 'Ảnh',
-    sortable: false,
     roles: [ROLES.MANAGER],
     render: (row) =>
       row.imageUrl ? (
@@ -19,33 +18,31 @@ export const ALL_COLUMNS = [
   },
   {
     key: 'code',
+    sortKey: 'code',
     title: 'Mã SP',
-    sortable: true,
     roles: ALL_ROLES,
   },
   {
     key: 'name',
+    sortKey: 'name',
     title: 'Tên sản phẩm',
-    sortable: true,
     roles: ALL_ROLES,
   },
   {
     key: 'category',
     title: 'Danh mục',
-    sortable: false,
     roles: ALL_ROLES,
     render: (row) => (row.category && row.category.name ? row.category.name : '—'),
   },
   {
     key: 'baseUnit',
     title: 'ĐVT',
-    sortable: false,
     roles: ALL_ROLES,
   },
   {
     key: 'salePrice',
+    sortKey: 'salePrice',
     title: 'Giá bán',
-    sortable: true,
     align: 'right',
     roles: [ROLES.MANAGER, ROLES.CASHIER],
     render: (row) => <span className={styles.tabular}>{formatCurrency(row.salePrice)}</span>,
@@ -53,14 +50,13 @@ export const ALL_COLUMNS = [
   {
     key: 'barcode',
     title: 'Mã vạch',
-    sortable: false,
     roles: ALL_ROLES,
     render: (row) => <span className={styles.mono}>{row.barcode || '—'}</span>,
   },
   {
     key: 'stockInBaseUnit',
+    sortKey: 'stock',
     title: 'Tồn kho',
-    sortable: true,
     align: 'right',
     roles: ALL_ROLES,
     render: (row) =>
@@ -73,7 +69,6 @@ export const ALL_COLUMNS = [
   {
     key: 'variantCount',
     title: 'Số ĐVT',
-    sortable: false,
     align: 'right',
     roles: [ROLES.MANAGER],
     render: (row) => <span className={styles.tabular}>{row.variantCount ?? '—'}</span>,
@@ -81,7 +76,6 @@ export const ALL_COLUMNS = [
   {
     key: 'status',
     title: 'Trạng thái',
-    sortable: false,
     roles: [ROLES.MANAGER, ROLES.WAREHOUSE, 'Warehouse'],
     render: (row) => {
       if (row.status === 'Selling') {
@@ -102,4 +96,3 @@ export function getVisibleColumns(role) {
   const normRole = role === 'Warehouse' ? ROLES.WAREHOUSE : role;
   return ALL_COLUMNS.filter((col) => col.roles.includes(normRole) || col.roles.includes(role));
 }
-

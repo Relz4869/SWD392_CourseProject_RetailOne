@@ -19,15 +19,19 @@ export default function DataTable({
   loading = false,
   emptyContent = null,
 }) {
+  const getSortKey = (col) => (col.sortKey !== undefined ? col.sortKey : col.sortable ? col.key : null);
+
   const handleSort = (col) => {
-    if (!col.sortable || !onSort) return;
-    const nextDir = sortBy === col.key && sortDir === 'asc' ? 'desc' : 'asc';
-    onSort(col.key, nextDir);
+    const sortIdentifier = getSortKey(col);
+    if (!sortIdentifier || !onSort) return;
+    const nextDir = sortBy === sortIdentifier && sortDir === 'asc' ? 'desc' : 'asc';
+    onSort(sortIdentifier, nextDir);
   };
 
   const arrow = (col) => {
-    if (!col.sortable) return null;
-    if (sortBy !== col.key) return <span className="text-muted"> ↕</span>;
+    const sortIdentifier = getSortKey(col);
+    if (!sortIdentifier) return null;
+    if (sortBy !== sortIdentifier) return <span className="text-muted"> ↕</span>;
     return <span>{sortDir === 'asc' ? ' ▲' : ' ▼'}</span>;
   };
 
@@ -38,20 +42,24 @@ export default function DataTable({
       <table className={styles.table}>
         <thead>
           <tr>
-            {columns.map((col) => (
-              <th
-                key={col.key}
-                style={col.width ? { width: col.width } : undefined}
-                className={[col.sortable ? styles.sortable : '', col.align === 'right' ? styles.alignRight : '']
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => handleSort(col)}
-                aria-sort={sortBy === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
-              >
-                {col.title}
-                {arrow(col)}
-              </th>
-            ))}
+            {columns.map((col) => {
+              const sortIdentifier = getSortKey(col);
+              const isSortable = Boolean(sortIdentifier);
+              return (
+                <th
+                  key={col.key}
+                  style={col.width ? { width: col.width } : undefined}
+                  className={[isSortable ? styles.sortable : '', col.align === 'right' ? styles.alignRight : '']
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => isSortable && handleSort(col)}
+                  aria-sort={isSortable && sortBy === sortIdentifier ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
+                  {col.title}
+                  {arrow(col)}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>

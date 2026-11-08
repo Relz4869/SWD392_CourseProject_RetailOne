@@ -43,6 +43,13 @@ test("ProductListItem: canSortBy('Warehouse', 'salePrice') === false", () => {
   assert.strictEqual(ProductListItem.canSortBy('Manager', 'salePrice'), true);
 });
 
+test('ProductListItem: canSortBy role rules', () => {
+  assert.strictEqual(ProductListItem.canSortBy('Manager', 'stock'), true);
+  assert.strictEqual(ProductListItem.canSortBy('Warehouse Staff', 'stock'), true);
+  assert.strictEqual(ProductListItem.canSortBy('Warehouse Staff', 'salePrice'), false);
+  assert.strictEqual(ProductListItem.canSortBy('Manager', 'stockInBaseUnit'), false);
+});
+
 test('ProductListItem: tồn kho 0 thì outOfStock === true', () => {
   const itemZero = makeItem({ stockInBaseUnit: 0 });
   assert.strictEqual(itemZero.isOutOfStock(), true);
