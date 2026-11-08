@@ -23,7 +23,11 @@ export default function RequireAuth({ children, permission }) {
     return null;
   }
 
-  if (permission && !permissions.includes(permission)) {
+  const allowed = !permission || (Array.isArray(permission)
+    ? permission.some((key) => permissions.includes(key))
+    : permissions.includes(permission));
+
+  if (!allowed) {
     return (
       <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--color-danger-700)' }}>
         Bạn không có quyền truy cập trang này.
