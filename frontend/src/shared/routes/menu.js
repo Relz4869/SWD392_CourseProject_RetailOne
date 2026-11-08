@@ -1,8 +1,9 @@
 import { PATHS } from './paths';
 import { PERMISSIONS as P } from '../constants/permissions';
 
-// 5 mục menu chính: Sản phẩm, Khuyến mãi, Nhân viên, Ca làm việc, Bàn giao tiền
+// Menu chính: Danh mục, Sản phẩm, Khuyến mãi, Nhân viên, Ca làm việc, Bàn giao tiền
 export const MENU = Object.freeze([
+  { label: 'Danh mục', path: PATHS.CATEGORIES, permission: P.CATEGORY_VIEW, enabled: true, uc: 'UC39' },
   { label: 'Sản phẩm', path: PATHS.PRODUCTS, permission: P.PRODUCT_VIEW, enabled: true, uc: 'UC48' },
   { label: 'Khuyến mãi', path: PATHS.PROMOTIONS, permission: P.PROMOTION_VIEW, enabled: false, uc: 'UC53, UC54, UC56' },
   { label: 'Nhân viên', path: PATHS.STAFF, permission: P.STAFF_VIEW, enabled: false, uc: 'UC64, UC66' },

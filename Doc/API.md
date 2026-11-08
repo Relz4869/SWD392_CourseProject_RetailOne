@@ -25,7 +25,7 @@
         "staffId": 1,
         "fullName": "Nguyen Van Quan Ly",
         "requirePasswordChange": false,
-        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "..."]
+        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "CATEGORY_CREATE", "..."]
       }
     }
   }
@@ -51,7 +51,7 @@
         "staffId": 1,
         "fullName": "Nguyen Van Quan Ly",
         "requirePasswordChange": false,
-        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "..."]
+        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "CATEGORY_CREATE", "..."]
       }
     }
   }
@@ -122,6 +122,72 @@
       { "id": 1, "name": "Đồ uống", "level": 0 },
       { "id": 2, "name": "Nước ngọt", "level": 1 },
       { "id": 3, "name": "Bia", "level": 1 }
+    ]
+  }
+  ```
+- **Mã lỗi:**
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `CATEGORY_VIEW`
+
+### 2.3 POST /api/categories
+- **Mô tả:** Tạo danh mục sản phẩm mới (UC39)
+- **Middleware:** `authenticate`, `protect(CATEGORY_CREATE)`, `validate(body)`
+- **Request Body:**
+  ```json
+  {
+    "name": "Nước tăng lực",
+    "parentId": 1
+  }
+  ```
+  *(parentId tùy chọn, nếu không gửi thì là danh mục gốc level 0)*
+- **Response 201 (Created):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 15,
+      "name": "Nước tăng lực",
+      "parentId": 1,
+      "status": 1,
+      "imageUrl": null
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Thiếu hoặc sai định dạng tên (max 100 ký tự)
+  - `400 CATEGORY_INACTIVE`: Danh mục cha đang ngừng hoạt động (`status = 0`)
+  - `400 CATEGORY_MAX_DEPTH`: Danh mục cha đã là danh mục con (chỉ hỗ trợ tối đa 2 cấp)
+  - `404 CATEGORY_NOT_FOUND`: Danh mục cha không tồn tại
+  - `409 CATEGORY_NAME_EXISTS`: Tên danh mục đã tồn tại trong cùng cấp (cùng `parentId`)
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `CATEGORY_CREATE`
+
+### 2.4 GET /api/categories
+- **Mô tả:** Lấy toàn bộ danh sách danh mục dạng cây phẳng hiển thị trên trang Quản lý danh mục
+- **Middleware:** `authenticate`, `protect(CATEGORY_VIEW)`
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "name": "Đồ uống",
+        "parentId": null,
+        "status": 1,
+        "imageUrl": null,
+        "level": 0,
+        "childCount": 2
+      },
+      {
+        "id": 2,
+        "name": "Nước ngọt",
+        "parentId": 1,
+        "status": 1,
+        "imageUrl": null,
+        "level": 1,
+        "childCount": 0
+      }
     ]
   }
   ```
