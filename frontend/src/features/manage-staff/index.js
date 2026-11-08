@@ -1,2 +1,2 @@
-﻿// Owner: MaiCT | UC64, UC66
+// Owner: MaiCT | UC64, UC66
 export {};

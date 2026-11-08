@@ -50,3 +50,4 @@ export default function ComingSoon({ title, owner, ucs }) {
     </div>
   );
 }
+

@@ -6,3 +6,4 @@ module.exports = {
   // TODO UC54: assignTargets(promotionId, targets, tx)
   // TODO UC56: updateStatus(promotion, tx)
 };
+

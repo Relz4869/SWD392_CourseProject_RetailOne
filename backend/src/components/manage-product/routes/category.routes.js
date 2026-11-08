@@ -6,3 +6,4 @@ const router = require('express').Router();
 // TODO: GET /options -> categoryController.options
 
 module.exports = router;
+

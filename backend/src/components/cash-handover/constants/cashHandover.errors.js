@@ -4,3 +4,4 @@ const CASH_HANDOVER_ERRORS = Object.freeze({
 });
 
 module.exports = { CASH_HANDOVER_ERRORS };
+

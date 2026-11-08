@@ -8,3 +8,4 @@ module.exports = {
   updatePrice: async () => notImplemented('UC46'),
   listProducts: async () => notImplemented('UC48'),
 };
+

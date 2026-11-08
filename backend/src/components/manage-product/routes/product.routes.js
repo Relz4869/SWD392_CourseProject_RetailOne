@@ -8,3 +8,4 @@ const router = require('express').Router();
 // TODO UC48: GET / -> productController.list
 
 module.exports = router;
+

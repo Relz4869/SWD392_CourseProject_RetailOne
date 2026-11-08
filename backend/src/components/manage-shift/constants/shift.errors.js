@@ -5,3 +5,4 @@ const SHIFT_ERRORS = Object.freeze({
 });
 
 module.exports = { SHIFT_ERRORS };
+

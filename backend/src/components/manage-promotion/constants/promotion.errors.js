@@ -5,3 +5,4 @@ const PROMOTION_ERRORS = Object.freeze({
 });
 
 module.exports = { PROMOTION_ERRORS };
+

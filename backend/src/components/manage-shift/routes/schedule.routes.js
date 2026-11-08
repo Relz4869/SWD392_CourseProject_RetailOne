@@ -6,3 +6,4 @@ const router = require('express').Router();
 // TODO UC73: POST /:id/check-in -> scheduleController.checkIn
 
 module.exports = router;
+

@@ -6,3 +6,4 @@ module.exports = {
   // TODO UC46: updatePrice(variant, history, tx)
   // TODO UC48: findPaged(filters, tx)
 };
+

@@ -7,3 +7,4 @@ const router = require('express').Router();
 // TODO UC56: DELETE /:id -> promotionController.delete
 
 module.exports = router;
+

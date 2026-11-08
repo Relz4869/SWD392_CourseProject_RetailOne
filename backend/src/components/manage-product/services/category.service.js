@@ -7,3 +7,4 @@ module.exports = {
   createCategory: async () => notImplemented('UC39'),
   getCategoryOptions: async () => notImplemented('CATEGORY_OPTIONS'),
 };
+

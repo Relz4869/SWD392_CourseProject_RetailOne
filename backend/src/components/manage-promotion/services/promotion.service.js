@@ -8,3 +8,4 @@ module.exports = {
   assignProducts: async () => notImplemented('UC54'),
   deletePromotion: async () => notImplemented('UC56'),
 };
+

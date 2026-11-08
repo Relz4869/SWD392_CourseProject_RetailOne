@@ -6,3 +6,4 @@ module.exports = {
   // TODO UC46: updatePrice(req, res)
   // TODO UC48: list(req, res)
 };
+

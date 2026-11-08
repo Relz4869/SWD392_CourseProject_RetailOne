@@ -5,3 +5,4 @@ module.exports = {
   // TODO UC64: insert(staff, tx)
   // TODO UC66: updateStatus(staffId, status, tx)
 };
+

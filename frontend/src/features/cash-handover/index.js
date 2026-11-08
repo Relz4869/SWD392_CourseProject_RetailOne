@@ -1,2 +1,2 @@
-﻿// Owner: HiepND | UC82, UC83
+// Owner: HiepND | UC82, UC83
 export {};

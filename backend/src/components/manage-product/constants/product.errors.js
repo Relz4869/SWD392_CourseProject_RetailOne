@@ -5,3 +5,4 @@ const PRODUCT_ERRORS = Object.freeze({
 });
 
 module.exports = { PRODUCT_ERRORS };
+
