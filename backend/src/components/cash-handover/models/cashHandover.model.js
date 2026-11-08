@@ -64,3 +64,4 @@ class CashHandover extends BaseModel {
 }
 
 module.exports = CashHandover;
+

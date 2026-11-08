@@ -63,3 +63,4 @@ class LoginAccount extends BaseModel {
 }
 
 module.exports = LoginAccount;
+

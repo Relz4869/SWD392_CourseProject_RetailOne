@@ -38,3 +38,4 @@ class Staff extends BaseModel {
 }
 
 module.exports = Staff;
+

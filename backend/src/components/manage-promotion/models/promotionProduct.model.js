@@ -33,3 +33,4 @@ class PromotionProduct extends BaseModel {
 }
 
 module.exports = PromotionProduct;
+

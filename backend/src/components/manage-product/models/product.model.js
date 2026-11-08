@@ -36,3 +36,4 @@ class Product extends BaseModel {
 }
 
 module.exports = Product;
+

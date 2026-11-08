@@ -92,3 +92,4 @@ class ProductListItem extends BaseModel {
 }
 
 module.exports = ProductListItem;
+

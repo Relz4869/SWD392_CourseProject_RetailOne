@@ -48,3 +48,4 @@ class Shift extends BaseModel {
 }
 
 module.exports = Shift;
+

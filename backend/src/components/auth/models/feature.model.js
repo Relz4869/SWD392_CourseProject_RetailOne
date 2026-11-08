@@ -12,3 +12,4 @@ class Feature extends BaseModel {
 }
 
 module.exports = Feature;
+

@@ -16,3 +16,4 @@ class ProductSalePriceHistory extends BaseModel {
 }
 
 module.exports = ProductSalePriceHistory;
+

@@ -28,3 +28,4 @@ class User extends BaseModel {
 }
 
 module.exports = User;
+

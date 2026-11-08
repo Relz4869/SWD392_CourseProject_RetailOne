@@ -11,3 +11,4 @@ class RoleFeature extends BaseModel {
 }
 
 module.exports = RoleFeature;
+

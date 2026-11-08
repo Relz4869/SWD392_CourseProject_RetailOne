@@ -56,3 +56,4 @@ class Promotion extends BaseModel {
 }
 
 module.exports = Promotion;
+

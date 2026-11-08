@@ -24,3 +24,4 @@ class Category extends BaseModel {
 }
 
 module.exports = Category;
+

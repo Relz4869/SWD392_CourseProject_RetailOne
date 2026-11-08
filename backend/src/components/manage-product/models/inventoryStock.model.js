@@ -22,3 +22,4 @@ class InventoryStock extends BaseModel {
 }
 
 module.exports = InventoryStock;
+

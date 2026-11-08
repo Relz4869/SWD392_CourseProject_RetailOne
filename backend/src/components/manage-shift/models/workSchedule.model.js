@@ -86,3 +86,4 @@ class WorkSchedule extends BaseModel {
 }
 
 module.exports = WorkSchedule;
+
