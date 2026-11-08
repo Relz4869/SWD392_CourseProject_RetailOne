@@ -7,3 +7,4 @@ export default function CategoriesPage() {
   const { permissions } = useAuth();
   return <CategoryListView permissions={permissions} />;
 }
+

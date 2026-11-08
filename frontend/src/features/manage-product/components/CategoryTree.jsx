@@ -48,3 +48,4 @@ export default function CategoryTree({ categories = [], loading = false }) {
     </div>
   );
 }
+
