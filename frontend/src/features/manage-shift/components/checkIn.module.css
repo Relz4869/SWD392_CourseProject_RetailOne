@@ -1,0 +1,317 @@
+.page {
+  --ro-surface: #ffffff;
+  --ro-bg-alt: #edebe9;
+  --ro-heading: #006241;
+  --ro-action: #00754a;
+  --ro-dark: #1e3932;
+  --ro-success-bg: #d4e9e2;
+  --ro-text: rgba(0, 0, 0, 0.87);
+  --ro-muted: rgba(0, 0, 0, 0.58);
+  --ro-error: #c82014;
+  --ro-radius: 12px;
+  --ro-shadow: 0 0 0.5px rgba(0, 0, 0, 0.14), 0 1px 1px rgba(0, 0, 0, 0.24);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.loadingCard,
+.emptyCard,
+.shiftCard,
+.activeCard {
+  border: 1px solid var(--border);
+  border-radius: var(--ro-radius);
+  background: var(--ro-surface);
+  box-shadow: var(--ro-shadow);
+}
+
+.loadingCard,
+.emptyCard {
+  min-height: 180px;
+}
+
+.shiftList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.shiftCard,
+.activeCard {
+  padding: 24px;
+}
+
+.shiftCard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.shiftCard h2,
+.activeCard h2,
+.dialog h2 {
+  margin: 0;
+  color: var(--ro-heading);
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--ro-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shiftDate {
+  margin: 4px 0 0;
+  color: var(--ro-muted);
+}
+
+.shiftFacts,
+.activeFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.shiftFacts div,
+.activeFacts div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shiftFacts dt,
+.activeFacts dt {
+  color: var(--ro-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.shiftFacts dd,
+.activeFacts dd {
+  margin: 0;
+  color: var(--ro-text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.shiftCard > button {
+  min-height: 44px;
+  align-self: flex-start;
+}
+
+.windowMessage {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--ro-dark);
+  border-radius: 6px;
+  background: var(--ro-bg-alt);
+  color: var(--ro-text);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.activeCard {
+  background: var(--ro-dark);
+  color: #ffffff;
+}
+
+.activeCard h2 {
+  color: #ffffff;
+}
+
+.activeCard > p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.activeBadge {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  background: var(--ro-success-bg);
+  color: var(--ro-heading);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activeFacts dt {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.activeFacts dd {
+  color: #ffffff;
+}
+
+.dialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--ro-radius);
+  background: var(--ro-surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.closeButton {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ro-muted);
+  cursor: pointer;
+  font-size: 26px;
+}
+
+.closeButton:hover:not(:disabled) {
+  background: var(--ro-bg-alt);
+  color: var(--ro-text);
+}
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: #f9f9f9;
+  border-radius: 0 0 var(--ro-radius) var(--ro-radius);
+}
+
+.dialogActions button {
+  min-height: 44px;
+}
+
+.cashInput {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--ro-surface);
+  color: var(--ro-text);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cashInput:focus {
+  border-color: var(--ro-action);
+  outline: 3px solid rgba(0, 117, 74, 0.16);
+  outline-offset: 1px;
+}
+
+.cashInput[aria-invalid='true'] {
+  border-color: var(--ro-error);
+  background: #fdecea;
+}
+
+.cashPreview {
+  color: var(--ro-heading);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cashHint,
+.warehouseNote {
+  color: var(--ro-muted);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.warehouseNote {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--ro-success-bg);
+  color: var(--ro-heading);
+}
+
+@media (max-width: 640px) {
+  .page {
+    gap: 16px;
+  }
+
+  .shiftList {
+    grid-template-columns: 1fr;
+  }
+
+  .shiftCard,
+  .activeCard,
+  .dialogBody {
+    padding: 16px;
+  }
+
+  .shiftFacts,
+  .activeFacts {
+    grid-template-columns: 1fr;
+  }
+
+  .shiftCard > button,
+  .dialogActions button {
+    width: 100%;
+  }
+
+  .dialogOverlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .dialog {
+    max-height: 92vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .dialogHeader {
+    padding: 16px;
+  }
+
+  .dialogActions {
+    flex-direction: column-reverse;
+    padding: 12px 16px 16px;
+    border-radius: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog,
+  .shiftCard {
+    scroll-behavior: auto;
+  }
+}
