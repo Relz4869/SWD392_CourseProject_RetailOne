@@ -1,3 +1,3 @@
-﻿// Feature: auth (UC69).
-// TODO UC69 (Phase 3): export AuthProvider, useAuth, LoginForm, RequireAuth.
-export {};
+﻿export { default as AuthProvider, useAuth } from './components/AuthProvider';
+export { default as LoginForm } from './components/LoginForm';
+export { default as RequireAuth } from './components/RequireAuth';

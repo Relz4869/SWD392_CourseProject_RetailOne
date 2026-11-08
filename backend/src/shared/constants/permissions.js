@@ -49,7 +49,7 @@ const PERMISSION_DESCRIPTIONS = Object.freeze({
 const ALL = Object.values(PERMISSIONS);
 const P = PERMISSIONS;
 
-// NFR RBAC: Warehouse must not see prices, revenue or HR data.
+// NFR RBAC: Warehouse Staff must not see prices, revenue or HR data.
 const ROLE_PERMISSIONS = Object.freeze({
   [ROLES.MANAGER]: Object.freeze(
     ALL.filter((k) => k !== P.SCHEDULE_CHECK_IN && k !== P.CASH_HANDOVER_CREATE),
@@ -61,4 +61,3 @@ const ROLE_PERMISSIONS = Object.freeze({
 });
 
 module.exports = { PERMISSIONS, PERMISSION_DESCRIPTIONS, ROLE_PERMISSIONS };
-

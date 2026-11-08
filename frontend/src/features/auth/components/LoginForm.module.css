@@ -1,0 +1,50 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordInput {
+  padding-right: var(--space-10) !important;
+}
+
+.toggleBtn {
+  position: absolute;
+  right: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.toggleBtn:hover {
+  color: var(--color-text-main);
+}
+
+.alertBox {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background-color: var(--color-danger-50);
+  color: var(--color-danger-700);
+  border: 1px solid var(--color-danger-500);
+}
+
+.infoBox {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background-color: var(--color-warning-50);
+  color: var(--color-warning-700);
+  border: 1px solid var(--color-warning-500);
+}

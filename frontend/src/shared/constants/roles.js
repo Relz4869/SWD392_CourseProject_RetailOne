@@ -1,8 +1,8 @@
-// Copy of backend/src/shared/constants/roles.js (keep values identical).
+// Copy of backend/src/shared/constants/roles.js (exact match from DB: Manager / Cashier / Warehouse Staff)
 export const ROLES = Object.freeze({
   MANAGER: 'Manager',
   CASHIER: 'Cashier',
-  WAREHOUSE: 'Warehouse',
+  WAREHOUSE: 'Warehouse Staff',
 });
 
 export const ROLE_LABELS = Object.freeze({
@@ -10,4 +10,3 @@ export const ROLE_LABELS = Object.freeze({
   [ROLES.CASHIER]: 'Thu ngân',
   [ROLES.WAREHOUSE]: 'Nhân viên kho',
 });
-

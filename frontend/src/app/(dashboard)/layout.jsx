@@ -1,13 +1,21 @@
 'use client';
 
+import { RequireAuth, useAuth } from '@/features/auth';
 import DashboardLayout from '@/shared/layouts/DashboardLayout';
 
-// Placeholder shell. TODO UC69 (Phase 3): <RequireAuth> + user/permissions from useAuth().
 export default function Layout({ children }) {
   return (
-    <DashboardLayout user={null} permissions={[]} onLogout={() => {}}>
+    <RequireAuth>
+      <Shell>{children}</Shell>
+    </RequireAuth>
+  );
+}
+
+function Shell({ children }) {
+  const { user, permissions, logout } = useAuth();
+  return (
+    <DashboardLayout user={user} permissions={permissions} onLogout={logout}>
       {children}
     </DashboardLayout>
   );
 }
-

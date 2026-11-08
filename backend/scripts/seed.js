@@ -6,11 +6,11 @@ const { ROLES } = require('../src/shared/constants/roles');
 const { PERMISSIONS, PERMISSION_DESCRIPTIONS, ROLE_PERMISSIONS } = require('../src/shared/constants/permissions');
 
 const TEST_ACCOUNTS = [
-  { username: 'manager', password: 'Manager@123', role: 'Manager', isActive: 'active', requirePasswordChange: 0, fullName: 'Nguyễn Văn Quản', phone: '0900000001' },
-  { username: 'cashier01', password: 'Cashier@123', role: 'Cashier', isActive: 'active', requirePasswordChange: 0, fullName: 'Trần Thị Thu', phone: '0900000002' },
-  { username: 'warehouse01', password: 'Warehouse@123', role: 'Warehouse', isActive: 'active', requirePasswordChange: 0, fullName: 'Lê Văn Kho', phone: '0900000003' },
-  { username: 'locked01', password: 'Locked@123', role: 'Cashier', isActive: 'locked', requirePasswordChange: 0, fullName: 'Phạm Văn Khóa', phone: '0900000004' },
-  { username: 'newcashier', password: 'Newcashier@123', role: 'Cashier', isActive: 'active', requirePasswordChange: 1, fullName: 'Đỗ Thị Mới', phone: '0900000005' },
+  { username: 'manager', password: 'Manager@123', role: ROLES.MANAGER, isActive: 'active', requirePasswordChange: 0, fullName: 'Nguyễn Văn Quản', phone: '0900000001' },
+  { username: 'cashier01', password: 'Cashier@123', role: ROLES.CASHIER, isActive: 'active', requirePasswordChange: 0, fullName: 'Trần Thị Thu', phone: '0900000002' },
+  { username: 'warehouse01', password: 'Warehouse@123', role: ROLES.WAREHOUSE, isActive: 'active', requirePasswordChange: 0, fullName: 'Lê Văn Kho', phone: '0900000003' },
+  { username: 'locked01', password: 'Locked@123', role: ROLES.CASHIER, isActive: 'locked', requirePasswordChange: 0, fullName: 'Phạm Văn Khóa', phone: '0900000004' },
+  { username: 'newcashier', password: 'Newcashier@123', role: ROLES.CASHIER, isActive: 'active', requirePasswordChange: 1, fullName: 'Đỗ Thị Mới', phone: '0900000005' },
 ];
 
 async function runDemoSqlIfAvailable() {
@@ -45,12 +45,6 @@ async function findOrCreateRole(tx, roleTarget) {
   const allRoles = allRolesRes.recordset;
 
   let match = allRoles.find((r) => r.name && r.name.trim().toLowerCase() === targetNorm);
-  if (!match) {
-    if (targetNorm === 'warehouse') {
-      match = allRoles.find((r) => r.name && r.name.trim().toLowerCase().startsWith('warehouse'));
-    }
-  }
-
   if (match) return match.id;
 
   const insertRes = await new sql.Request(tx)
@@ -162,6 +156,15 @@ async function seed() {
               INSERT INTO dbo.Staff (userId, fullName, phoneNumber, salaryType, baseSalary, employmentStatus)
               VALUES (@userId, @fullName, @phone, 'monthly', 10000000, 'working')
             `);
+        }
+      }
+
+      // 4. Final verification: all keys in ROLE_PERMISSIONS must exist in dbo.Roles
+      const dbRolesRes = await new sql.Request(tx).query('SELECT name FROM dbo.Roles');
+      const dbRoleNames = dbRolesRes.recordset.map((r) => r.name);
+      for (const expectedRole of Object.keys(ROLE_PERMISSIONS)) {
+        if (!dbRoleNames.includes(expectedRole)) {
+          throw new Error(`Missing role in dbo.Roles: ${expectedRole}. Roles in DB: ${dbRoleNames.join(', ')}`);
         }
       }
 

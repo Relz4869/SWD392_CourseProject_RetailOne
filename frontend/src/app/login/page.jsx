@@ -1,11 +1,28 @@
-import AuthLayout from '@/shared/layouts/AuthLayout';
+'use client';
 
-// Placeholder. TODO UC69 (Phase 3): <LoginForm /> from features/auth.
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import AuthLayout from '@/shared/layouts/AuthLayout';
+import { LoginForm, useAuth } from '@/features/auth';
+import Spinner from '@/shared/components/Spinner';
+
 export default function LoginPage() {
+  const router = useRouter();
+  const { status } = useAuth();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/products');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return <Spinner center size={32} />;
+  }
+
   return (
-    <AuthLayout>
-      <p className="text-muted">Trang đăng nhập sẽ được hoàn thiện ở UC69.</p>
+    <AuthLayout title="RetailOne POS" subtitle="Đăng nhập để tiếp tục">
+      <LoginForm />
     </AuthLayout>
   );
 }
-
