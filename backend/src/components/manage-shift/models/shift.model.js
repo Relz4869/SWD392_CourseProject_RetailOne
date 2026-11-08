@@ -21,7 +21,6 @@ class Shift extends BaseModel {
     return normalizeTime(this.endTime) > normalizeTime(this.startTime);
   }
 
-  /** UC73 */
   checkInWindow() {
     return {
       from: normalizeTime(this.checkInStart ?? this.startTime),
@@ -29,19 +28,16 @@ class Shift extends BaseModel {
     };
   }
 
-  /** UC73 */
   isInCheckInWindow(time) {
     const t = normalizeTime(time);
     const win = this.checkInWindow();
     return t >= win.from && t <= win.to;
   }
 
-  /** UC73 */
   isLate(time) {
     return normalizeTime(time) > normalizeTime(this.startTime);
   }
 
-  /** UC79 */
   durationHours() {
     return hoursBetweenTimes(this.startTime, this.endTime);
   }

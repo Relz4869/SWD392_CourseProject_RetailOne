@@ -12,7 +12,6 @@ export default function DashboardLayout({ user, permissions = [], onLogout, chil
       <div className={styles.main}>
         <Header user={user} onLogout={onLogout} />
         {user && user.requirePasswordChange && (
-          // BR-01: UC71 Change Password comes later; navigation is not blocked yet.
           <div className={styles.banner} role="status">
             Bạn cần đổi mật khẩu trong lần đăng nhập đầu tiên.
           </div>

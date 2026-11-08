@@ -60,6 +60,16 @@ export function AuthProvider({ children }) {
     router.replace('/login');
   };
 
+  const changePassword = async (values) => {
+    const data=await authApi.changePassword(values);
+    setToken(data.token);
+    setUser(data.user);
+    setPermissions(data.permissions || []);
+    setSession({user:data.user,permissions:data.permissions});
+    setStatus('authenticated');
+    return data;
+  };
+
   const hasPermission = (key) => permissions.includes(key);
 
   return (
@@ -69,6 +79,7 @@ export function AuthProvider({ children }) {
         permissions,
         status,
         login,
+        changePassword,
         logout,
         hasPermission,
       }}

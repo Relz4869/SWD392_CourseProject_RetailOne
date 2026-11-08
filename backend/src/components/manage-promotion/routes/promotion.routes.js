@@ -1,10 +1,20 @@
-// Owner: MaiCT | UC53, UC54, UC56
-// Tables: Promotions, PromotionProducts
 const router = require('express').Router();
-
-// TODO UC53: POST / -> promotionController.create
-// TODO UC54: PUT /:id/targets -> promotionController.assignProducts
-// TODO UC56: DELETE /:id -> promotionController.delete
-
+const { authenticate } = require('../../auth');
+const { protect } = require('../../../shared/middlewares/permission.middleware');
+const { PERMISSIONS: P } = require('../../../shared/constants/permissions');
+const { ROLES } = require('../../../shared/constants/roles');
+const { ERRORS } = require('../../../shared/constants/errors');
+const AppError = require('../../../shared/utils/AppError');
+const controller = require('../controllers/promotion.controller');
+router.use(authenticate);
+router.use((req, res, next) => req.user.role === ROLES.MANAGER ? next() : next(new AppError(ERRORS.FORBIDDEN)));
+router.get('/', protect(P.PROMOTION_VIEW), controller.loadPromotions);
+router.post('/', protect(P.PROMOTION_CREATE), controller.submitPromotion);
+router.get('/:id', protect(P.PROMOTION_VIEW), controller.getDetail);
+router.get('/:id/targets', protect(P.PROMOTION_ASSIGN_PRODUCT), controller.getDetail);
+router.put('/:id/draft', protect(P.PROMOTION_CREATE), controller.updateDraft);
+router.put('/:id/targets', protect(P.PROMOTION_ASSIGN_PRODUCT), controller.submitPromotionTargets);
+router.delete('/:id/targets/:targetId', protect(P.PROMOTION_ASSIGN_PRODUCT), controller.removeTarget);
+router.delete('/:id', protect(P.PROMOTION_DELETE), controller.confirmDeletePromotion);
 module.exports = router;
 

@@ -5,19 +5,21 @@ class Promotion extends BaseModel {
   static TABLE = 'dbo.Promotions';
 
   static TYPE = Object.freeze({ PERCENT: 'Percent', AMOUNT: 'Amount' });
-  static STATUS = Object.freeze({ ACTIVE: 'Active', DISABLED: 'Disabled', EXPIRED: 'Expired', DELETED: 'Deleted' });
+  static STATUS = Object.freeze({ DRAFT: 'Draft', ACTIVE: 'Active', DISABLED: 'Disabled', EXPIRED: 'Expired', DELETED: 'Deleted' });
 
   static COLUMNS = Object.freeze({
     id:              { type: sql.BigInt, pk: true, identity: true, bigint: true },
-    name:            { type: sql.NVarChar(255) },
-    type:            { type: sql.VarChar(20) },
-    value:           { type: sql.Decimal(15, 2) },
+    name:            { type: sql.NVarChar(255), nullable: true },
+    type:            { type: sql.VarChar(20), nullable: true },
+    value:           { type: sql.Decimal(15, 2), nullable: true },
     minInvoiceValue: { type: sql.Decimal(15, 2) },
     maxBudget:       { type: sql.Decimal(15, 2), nullable: true },
-    startDate:       { type: sql.DateTime2 },
-    endDate:         { type: sql.DateTime2 },
+    startDate:       { type: sql.DateTime2, nullable: true },
+    endDate:         { type: sql.DateTime2, nullable: true },
     status:          { type: sql.VarChar(20) },
     createdAt:       { type: sql.DateTime2 },
+    requestKey:      { type: sql.VarChar(100), nullable: true, sensitive: true },
+    requestHash:     { type: sql.VarChar(64), nullable: true, sensitive: true },
   });
 
   isDeleted() {
@@ -25,7 +27,7 @@ class Promotion extends BaseModel {
   }
 
   hasEnded(now = new Date()) {
-    return this.status === Promotion.STATUS.EXPIRED || this.endDate < now;
+    return this.status === Promotion.STATUS.EXPIRED || (this.endDate != null && this.endDate < now);
   }
 
   isRunning(now = new Date()) {
@@ -35,6 +37,16 @@ class Promotion extends BaseModel {
   /** "Upcoming" is not stored in DB: Active and not started yet. */
   isUpcoming(now = new Date()) {
     return this.status === Promotion.STATUS.ACTIVE && this.startDate > now;
+  }
+
+  effectiveStatus(now = new Date()) {
+    if (this.status !== Promotion.STATUS.ACTIVE) return this.status;
+    if (this.hasEnded(now)) return 'Expired';
+    return this.isUpcoming(now) ? 'Upcoming' : 'Active';
+  }
+
+  toJSON() {
+    return { ...super.toJSON(), status: this.effectiveStatus() };
   }
 
   /** UC54: products can be assigned only while the promotion is not deleted or ended. */

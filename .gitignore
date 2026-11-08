@@ -1,23 +1,70 @@
-# Dependencies
+# Thư viện và bộ nhớ đệm
 node_modules/
+.npm-cache/
+.yarn/cache/
+.pnpm-store/
 
-# Environment files (never commit secrets)
+# Cấu hình môi trường và khóa riêng; giữ các file mẫu
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+!.env.*.example
+*.key
+*.pfx
+*.p12
+.aws/
 
-# Build output
+# Kết quả build
 .next/
+.next-dev/
+.turbo/
+.vercel/
 dist/
 out/
 build/
+*.tsbuildinfo
 
-# Test coverage
+# Kết quả kiểm thử
 coverage/
+.nyc_output/
+test-results/
+playwright-report/
 
-# Logs / OS
+# Log và file tiến trình
+logs/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 *.log
+*.pid
+*.pid.lock
+
+# File dữ liệu và bản sao lưu SQL Server; không bỏ qua script .sql
+*.mdf
+*.ndf
+*.ldf
+*.bak
+*.trn
+
+# Cấu hình IDE cá nhân
+.idea/
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.user
+
+# File tạm và hệ điều hành
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
 .DS_Store
 Thumbs.db
+Desktop.ini
 
