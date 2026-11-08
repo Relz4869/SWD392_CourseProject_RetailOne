@@ -10,6 +10,8 @@
  ======================================================================= */
 USE [RetailOnePOS];
 GO
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
 IF EXISTS (SELECT 1 FROM dbo.Users WHERE username = 'demo_manager')
@@ -124,21 +126,7 @@ SELECT @WarehouseA=s.id FROM dbo.Staff s JOIN dbo.Users u ON u.id=s.userId WHERE
 SELECT @WarehouseB=s.id FROM dbo.Staff s JOIN dbo.Users u ON u.id=s.userId WHERE u.username='demo_warehouse_b';
 SELECT @Resigned=s.id FROM dbo.Staff s JOIN dbo.Users u ON u.id=s.userId WHERE u.username='demo_resigned';
 SELECT @Locked=s.id FROM dbo.Staff s JOIN dbo.Users u ON u.id=s.userId WHERE u.username='demo_locked';
--- Additional fictitious employees: >30 rows for pagination UC63
-DECLARE @n INT=1, @DemoUserId INT, @ExtraRoleId INT;
-WHILE @n<=34
-BEGIN
-    SET @ExtraRoleId=(SELECT id FROM dbo.Roles WHERE name=CASE WHEN @n%3=0 THEN N'Warehouse Staff' ELSE N'Cashier' END);
-    INSERT INTO dbo.Users(roleId,username,passwordHash,isActive,requirePasswordChange)
-    VALUES(@ExtraRoleId,'demo_extra_'+RIGHT('000'+CAST(@n AS VARCHAR(3)),3),'$2b$10$FFDl66sRx8lg/6pgCdSTM.TxNLxViWD2//1ZdrcHufnSd18zhwIWC','active',1);
-    SET @DemoUserId=CONVERT(INT,SCOPE_IDENTITY());
-    INSERT INTO dbo.Staff(userId,fullName,phoneNumber,email,salaryType,baseSalary,employmentStatus,idCard)
-    VALUES(@DemoUserId,N'Nhân viên demo '+RIGHT('000'+CAST(@n AS VARCHAR(3)),3),
-           '0918'+RIGHT('000000'+CAST(@n AS VARCHAR(6)),6),
-           'extra'+CAST(@n AS VARCHAR(3))+'@retailone.demo','hourly',26000+(@n%4)*1000,'working',
-           '999'+RIGHT('000000000'+CAST(@n AS VARCHAR(9)),9));
-    SET @n=@n+1;
-END;
+DECLARE @n INT;
 INSERT INTO dbo.Counters ([counterCode], [counterName], [status])
 VALUES
   ('COUNTER-01', N'Quầy thu ngân số 1', 'ACTIVE'),
@@ -263,20 +251,6 @@ FROM (VALUES
   ('DEMO-OLD', N'Hộp', 1, 16000, '8999000000021', 'PIECE'),
   ('DEMO-SUSPENDED', N'Chai', 1, 14000, '8999000000022', 'PIECE')) v(productCode,unitName,conversionFactor,salePrice,barcode,unitType)
 JOIN dbo.Products p ON p.code=v.productCode;
--- 35 extra products/variants for Product List pagination, no stock by design.
-SET @n=1;
-WHILE @n<=35
-BEGIN
-    INSERT INTO dbo.Products(code,name,categoryId,baseUnit,status)
-    VALUES('DEMO-PRODUCT-'+RIGHT('000'+CAST(@n AS VARCHAR(3)),3),
-           N'Sản phẩm danh sách demo '+RIGHT('000'+CAST(@n AS VARCHAR(3)),3),
-           (SELECT id FROM dbo.Categories WHERE name=N'Đồ gia dụng'),N'Cái','Selling');
-    DECLARE @PaginationProductId BIGINT=CONVERT(BIGINT,SCOPE_IDENTITY());
-    INSERT INTO dbo.ProductVariants(productId,unitName,conversionFactor,salePrice,barcode,unitType)
-    VALUES(@PaginationProductId,N'Cái',1,5000+@n*100,
-           '8999010'+RIGHT('000000'+CAST(@n AS VARCHAR(6)),6),'PIECE');
-    SET @n=@n+1;
-END;
 -- Cross-layer lookup examples use natural keys, never assume identity starts at 1.
 INSERT INTO dbo.ProductSalePriceHistories(productId,variantId,oldSalePrice,newSalePrice,changedBy,changedAt)
 SELECT p.id,v.id,x.oldPrice,x.newPrice,@ManagerId,DATEADD(DAY,x.offsetDays,CAST(@Today AS DATETIME2(0)))
