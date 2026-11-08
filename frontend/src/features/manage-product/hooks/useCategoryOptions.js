@@ -41,3 +41,4 @@ export function useCategoryOptions() {
 
   return { options, loading, error };
 }
+

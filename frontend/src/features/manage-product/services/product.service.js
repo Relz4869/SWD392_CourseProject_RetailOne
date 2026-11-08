@@ -12,3 +12,4 @@ export async function getProducts(params = {}, options = {}) {
     signal: options.signal,
   });
 }
+

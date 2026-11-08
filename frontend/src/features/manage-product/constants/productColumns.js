@@ -102,3 +102,4 @@ export function getVisibleColumns(role) {
   const normRole = role === 'Warehouse' ? ROLES.WAREHOUSE : role;
   return ALL_COLUMNS.filter((col) => col.roles.includes(normRole) || col.roles.includes(role));
 }
+

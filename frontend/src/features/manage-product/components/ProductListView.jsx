@@ -94,3 +94,4 @@ export default function ProductListView({ role, permissions = [] }) {
     </div>
   );
 }
+

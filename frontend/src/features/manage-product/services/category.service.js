@@ -5,3 +5,4 @@ export async function getCategoryOptions(options = {}) {
     signal: options.signal,
   });
 }
+
