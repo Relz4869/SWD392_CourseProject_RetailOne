@@ -13,13 +13,13 @@ const TEST_ACCOUNTS = [
   { username: 'newcashier', password: 'Newcashier@123', role: 'Cashier', isActive: 'active', requirePasswordChange: 1, fullName: 'Đỗ Thị Mới', phone: '0900000005' },
 ];
 
-async function runDemoSqlIfAvailable(tx) {
+async function runDemoSqlIfAvailable() {
   const demoPath = path.resolve(__dirname, '../../Database/RetailOne_Demo_Records.sql');
   if (!fs.existsSync(demoPath)) return false;
 
   console.log('[SEED] Checking demo records from RetailOne_Demo_Records.sql...');
   const pool = await getPool();
-  const check = await pool.request().query('SELECT COUNT(*) AS total FROM dbo.Users WHERE username = \'demo_manager\'');
+  const check = await pool.request().query("SELECT COUNT(*) AS total FROM dbo.Users WHERE username = 'demo_manager'");
   if (check.recordset[0].total > 0) {
     console.log('[SEED] RetailOne_Demo_Records already loaded.');
     return true;
@@ -37,6 +37,32 @@ async function runDemoSqlIfAvailable(tx) {
   }
   console.log('[SEED] RetailOne_Demo_Records executed successfully.');
   return true;
+}
+
+async function findOrCreateRole(tx, roleTarget) {
+  const targetNorm = roleTarget.trim().toLowerCase();
+  const allRolesRes = await new sql.Request(tx).query('SELECT id, name FROM dbo.Roles');
+  const allRoles = allRolesRes.recordset;
+
+  let match = allRoles.find((r) => r.name && r.name.trim().toLowerCase() === targetNorm);
+  if (!match) {
+    if (targetNorm === 'warehouse') {
+      match = allRoles.find((r) => r.name && r.name.trim().toLowerCase().startsWith('warehouse'));
+    }
+  }
+
+  if (match) return match.id;
+
+  const insertRes = await new sql.Request(tx)
+    .input('name', sql.NVarChar(50), roleTarget)
+    .input('description', sql.NVarChar(sql.MAX), `Role ${roleTarget}`)
+    .query('INSERT INTO dbo.Roles (name, description) OUTPUT INSERTED.id VALUES (@name, @description)');
+
+  if (!insertRes.recordset || insertRes.recordset.length === 0) {
+    const list = allRoles.map((r) => r.name);
+    throw new Error(`Role not found and failed to insert: ${roleTarget}. Roles in DB: ${list.join(', ')}`);
+  }
+  return insertRes.recordset[0].id;
 }
 
 async function seed() {
@@ -74,11 +100,7 @@ async function seed() {
       }
 
       for (const [roleName, keys] of Object.entries(ROLE_PERMISSIONS)) {
-        const roleRes = await new sql.Request(tx)
-          .input('roleName', sql.NVarChar(50), roleName)
-          .query('SELECT id FROM dbo.Roles WHERE name = @roleName');
-        const roleId = roleRes.recordset[0]?.id;
-        if (!roleId) continue;
+        const roleId = await findOrCreateRole(tx, roleName);
 
         for (const key of keys) {
           await new sql.Request(tx)
@@ -107,10 +129,7 @@ async function seed() {
 
         let userId = uCheck.recordset[0]?.id;
         if (!userId) {
-          const roleRes = await new sql.Request(tx)
-            .input('roleName', sql.NVarChar(50), acc.role)
-            .query('SELECT id FROM dbo.Roles WHERE name = @roleName');
-          const roleId = roleRes.recordset[0].id;
+          const roleId = await findOrCreateRole(tx, acc.role);
           const hash = await bcrypt.hash(acc.password, 10);
 
           const insUser = await new sql.Request(tx)
@@ -124,6 +143,9 @@ async function seed() {
               OUTPUT INSERTED.id
               VALUES (@roleId, @username, @hash, @isActive, @reqPwd)
             `);
+          if (!insUser.recordset || insUser.recordset.length === 0) {
+            throw new Error(`Failed to insert user: ${acc.username}`);
+          }
           userId = insUser.recordset[0].id;
         }
 
@@ -146,7 +168,7 @@ async function seed() {
       console.log('[SEED] Seed completed successfully.');
     });
   } catch (err) {
-    console.error('[SEED] Error:', err.message);
+    console.error('[SEED] Error stack:\n', err.stack || err);
     process.exitCode = 1;
   } finally {
     await closePool().catch(() => {});

@@ -38,3 +38,4 @@ test('Shift: isLate check', () => {
   assert.strictEqual(shift.isLate('08:00:00'), false);
   assert.strictEqual(shift.isLate('08:00:01'), true);
 });
+

@@ -20,7 +20,7 @@ test('CashHandover: discrepancy requires note', () => {
     openingCash: 500000,
     systemCash: 1200000,
     actualCash: 1699999.99,
-    note: '   ',
+    note: null,
   });
 
   assert.strictEqual(h.hasDiscrepancy(), true);
@@ -29,6 +29,19 @@ test('CashHandover: discrepancy requires note', () => {
 
   h.note = 'Lệch 0.01 do làm tròn';
   assert.strictEqual(h.hasValidNote(), true);
+});
+
+test('CashHandover: lệch tiền mà note chỉ gồm khoảng trắng thì hasValidNote() trả false', () => {
+  const h = new CashHandover({
+    openingCash: 500000,
+    systemCash: 1200000,
+    actualCash: 1699999.99,
+    note: '     ',
+  });
+
+  assert.strictEqual(h.hasDiscrepancy(), true);
+  assert.strictEqual(h.requiresNote(), true);
+  assert.strictEqual(h.hasValidNote(), false);
 });
 
 test('CashHandover: decimal arithmetic 0.1 + 0.2 precision', () => {

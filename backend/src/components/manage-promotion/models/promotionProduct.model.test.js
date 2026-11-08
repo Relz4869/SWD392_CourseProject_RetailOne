@@ -21,3 +21,4 @@ test('PromotionProduct: variantId with productId is valid', () => {
   const pp = new PromotionProduct({ promotionId: 1, productId: 10, categoryId: null, variantId: 5 });
   assert.strictEqual(pp.isValidTarget(), true);
 });
+

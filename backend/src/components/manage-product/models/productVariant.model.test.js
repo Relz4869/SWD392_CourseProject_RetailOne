@@ -20,3 +20,4 @@ test('ProductVariant: changePrice with same price throws', () => {
   const v = new ProductVariant({ id: 3, productId: 100, conversionFactor: 1, salePrice: 10000 });
   assert.throws(() => v.changePrice(10000, 1));
 });
+

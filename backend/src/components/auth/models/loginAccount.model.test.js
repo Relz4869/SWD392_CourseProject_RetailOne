@@ -13,7 +13,17 @@ test('LoginAccount: active + working canLogin true', () => {
   assert.strictEqual(acc.canLogin(), true);
   assert.strictEqual(acc.isLocked(), false);
   assert.strictEqual(acc.hasResigned(), false);
+});
 
+test('LoginAccount: toSessionUser() không chứa key passwordHash', () => {
+  const acc = new LoginAccount({
+    userId: 1,
+    username: 'testuser',
+    passwordHash: 'super_secret_hash',
+    isActive: 'active',
+    employmentStatus: 'working',
+    role: 'Cashier',
+  });
   const session = acc.toSessionUser();
   assert.strictEqual('passwordHash' in session, false);
   assert.strictEqual(session.userId, 1);

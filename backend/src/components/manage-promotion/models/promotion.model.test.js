@@ -36,3 +36,4 @@ test('already deleted promotion cannot be deleted again', () => {
 test('markDeleted on running promotion throws', () => {
   assert.throws(() => make().markDeleted(now));
 });
+

@@ -69,3 +69,4 @@ test('WorkSchedule: complete calculates workedHours', () => {
   assert.strictEqual(ws.status, 'completed');
   assert.strictEqual(ws.workedHours, 8);
 });
+
