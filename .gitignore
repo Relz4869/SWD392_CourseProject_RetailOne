@@ -4,6 +4,11 @@ node_modules/
 .yarn/cache/
 .pnpm-store/
 
+# Tài liệu hướng dẫn và báo cáo làm việc cục bộ
+/CODEX_*.md
+/DESIGN-*.md
+/IMPLEMENTATION_*.md
+
 # Cấu hình môi trường và khóa riêng; giữ các file mẫu
 .env
 .env.*
