@@ -17,7 +17,6 @@ class ProductVariant extends BaseModel {
     unitType:         { type: sql.VarChar(20) },
   });
 
-  /** UC42 */
   isBaseUnit() {
     return this.conversionFactor === 1;
   }
@@ -27,12 +26,10 @@ class ProductVariant extends BaseModel {
     return this.barcode !== null && this.barcode !== undefined && String(this.barcode).trim() !== '';
   }
 
-  /** UC48 */
   toBaseQuantity(qty) {
     return Number(qty) * Number(this.conversionFactor);
   }
 
-  /** UC46 */
   isPriceChange(newPrice) {
     return Number(newPrice) !== Number(this.salePrice);
   }

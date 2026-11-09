@@ -1,5 +1,3 @@
-// Owner: PhuNT | UC42, UC46, UC48
-// Tables: Products, ProductVariants, ProductSalePriceHistories
 const router = require('express').Router();
 const { authenticate } = require('../../auth');
 const { protect } = require('../../../shared/middlewares/permission.middleware');

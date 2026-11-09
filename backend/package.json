@@ -12,6 +12,10 @@
     "start": "node src/server.js",
     "seed": "node scripts/seed.js",
     "check-models": "node scripts/check-models.js",
+    "migrate:promotions": "node scripts/migrate-promotions.js",
+    "test:promotions:sql": "node --test scripts/promotion-sql-check.js",
+    "migrate:staff": "node scripts/migrate-staff.js",
+    "test:staff:sql": "node --test scripts/staff-sql-check.js",
     "test": "node --test"
   },
   "dependencies": {

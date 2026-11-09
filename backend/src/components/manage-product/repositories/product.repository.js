@@ -1,6 +1,3 @@
-// Owner: PhuNT | UC42, UC46, UC48
-// Luôn trả về instance model qua Model.fromRow(row), không trả row thô.
-// Mọi hàm nhận tham số cuối là tx tùy chọn, dùng request(tx).
 const { sql, request } = require('../../../shared/config/database');
 const ProductListItem = require('../models/productListItem.model');
 
@@ -99,7 +96,15 @@ async function findPaged(filters, tx) {
   return { items, totalItems };
 }
 
+async function findPromotionCandidates(tx) {
+  const req = await request(tx);
+  const result = await req.query('SELECT * FROM dbo.Products WITH (HOLDLOCK) ORDER BY name, id');
+  const Product = require('../models/product.model');
+  return result.recordset.map((row) => Product.fromRow(row));
+}
+
 module.exports = {
+  findPromotionCandidates,
   // TODO UC42: insert(product, tx)
   // TODO UC46: updatePrice(variant, history, tx)
   findPaged,

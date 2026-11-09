@@ -45,7 +45,7 @@ export default function ComingSoon({ title, owner, ucs }) {
           display: 'inline-block',
         }}
       >
-        Phụ trách: <strong>{owner}</strong> &bull; Use Cases: <strong>{ucs}</strong>
+        Phụ trách: <strong>{owner}</strong> &bull; Chức năng: <strong>{ucs}</strong>
       </div>
     </div>
   );

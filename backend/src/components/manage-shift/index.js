@@ -1,4 +1,3 @@
-// Component: manage-shift (UC75, UC81, UC73)
 module.exports = {
   router: require('./routes/shift.routes'),
   shiftRouter: require('./routes/shift.routes'),

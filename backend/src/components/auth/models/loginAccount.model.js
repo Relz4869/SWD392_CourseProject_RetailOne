@@ -13,6 +13,7 @@ class LoginAccount extends BaseModel {
     passwordHash:          { type: sql.VarChar(255), sensitive: true },
     isActive:              { type: sql.VarChar(20) },
     requirePasswordChange: { type: sql.Bit },
+    tokenVersion:          { type: sql.Int, sensitive: true },
     roleId:                { type: sql.Int },
     role:                  { type: sql.NVarChar(50) },
     staffId:               { type: sql.BigInt, bigint: true },
@@ -30,9 +31,8 @@ class LoginAccount extends BaseModel {
     return this.employmentStatus === EMPLOYMENT_STATUS.RESIGNED;
   }
 
-  /** UC69, UC66 */
   canLogin() {
-    return !this.isLocked() && !this.hasResigned();
+    return this.isActive === LoginAccount.STATUS.ACTIVE && !this.hasResigned();
   }
 
   /** BR-01 */
@@ -40,16 +40,15 @@ class LoginAccount extends BaseModel {
     return this.requirePasswordChange === true;
   }
 
-  /** UC69 */
   toTokenPayload() {
     return {
       userId: this.userId,
       staffId: this.staffId,
       role: this.role,
+      tokenVersion: this.tokenVersion ?? 0,
     };
   }
 
-  /** UC69 */
   toSessionUser() {
     return {
       userId: this.userId,

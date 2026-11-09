@@ -49,12 +49,10 @@ class WorkSchedule extends BaseModel {
     return toDateString(this.workDate) === toDateString(now);
   }
 
-  /** UC73 */
   canCheckIn(now, shift) {
     return this.isAssigned() && this.isOnDate(now) && shift.isInCheckInWindow(toTimeString(now));
   }
 
-  /** UC73 */
   checkIn(now, shift, openingCash = null) {
     if (!this.canCheckIn(now, shift)) {
       throw new Error('checkIn() called when canCheckIn() is false');
@@ -68,7 +66,6 @@ class WorkSchedule extends BaseModel {
     return this;
   }
 
-  /** UC82 */
   canHandOver() {
     return this.isWorking() && this.checkInTime != null;
   }

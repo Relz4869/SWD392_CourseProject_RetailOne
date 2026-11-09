@@ -26,7 +26,6 @@ class Staff extends BaseModel {
     return this.employmentStatus === EMPLOYMENT_STATUS.WORKING;
   }
 
-  /** UC67 */
   isResigned() {
     return this.employmentStatus === EMPLOYMENT_STATUS.RESIGNED;
   }

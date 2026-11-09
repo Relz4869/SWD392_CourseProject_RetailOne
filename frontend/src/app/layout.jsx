@@ -3,7 +3,7 @@ import { AuthProvider } from '@/features/auth';
 
 export const metadata = {
   title: 'RetailOne POS',
-  description: 'RetailOne Integrated Retail POS System',
+  description: 'RetailOne — Hệ thống quản trị bán lẻ và bán hàng tại quầy',
 };
 
 export default function RootLayout({ children }) {
