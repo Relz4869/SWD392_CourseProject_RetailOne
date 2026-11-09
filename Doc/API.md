@@ -25,7 +25,7 @@
         "staffId": 1,
         "fullName": "Nguyen Van Quan Ly",
         "requirePasswordChange": false,
-        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "..."]
+        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "CATEGORY_CREATE", "..."]
       }
     }
   }
@@ -51,7 +51,7 @@
         "staffId": 1,
         "fullName": "Nguyen Van Quan Ly",
         "requirePasswordChange": false,
-        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "..."]
+        "permissions": ["PRODUCT_VIEW", "CATEGORY_VIEW", "CATEGORY_CREATE", "..."]
       }
     }
   }
@@ -128,3 +128,184 @@
 - **Mã lỗi:**
   - `401 UNAUTHENTICATED`: Chưa đăng nhập
   - `403 FORBIDDEN`: Không có quyền `CATEGORY_VIEW`
+
+### 2.3 POST /api/categories
+- **Mô tả:** Tạo danh mục sản phẩm mới (UC39)
+- **Middleware:** `authenticate`, `protect(CATEGORY_CREATE)`, `validate(body)`
+- **Request Body:**
+  ```json
+  {
+    "name": "Nước tăng lực",
+    "parentId": 1
+  }
+  ```
+  *(parentId tùy chọn, nếu không gửi thì là danh mục gốc level 0)*
+- **Response 201 (Created):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 15,
+      "name": "Nước tăng lực",
+      "parentId": 1,
+      "status": 1,
+      "imageUrl": null
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Thiếu hoặc sai định dạng tên (max 100 ký tự)
+  - `400 CATEGORY_INACTIVE`: Danh mục cha đang ngừng hoạt động (`status = 0`)
+  - `400 CATEGORY_MAX_DEPTH`: Danh mục cha đã là danh mục con (chỉ hỗ trợ tối đa 2 cấp)
+  - `404 CATEGORY_NOT_FOUND`: Danh mục cha không tồn tại
+  - `409 CATEGORY_NAME_EXISTS`: Tên danh mục đã tồn tại trong cùng cấp (cùng `parentId`)
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `CATEGORY_CREATE`
+
+### 2.4 GET /api/categories
+- **Mô tả:** Lấy toàn bộ danh sách danh mục dạng cây phẳng hiển thị trên trang Quản lý danh mục
+- **Middleware:** `authenticate`, `protect(CATEGORY_VIEW)`
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "name": "Đồ uống",
+        "parentId": null,
+        "status": 1,
+        "imageUrl": null,
+        "level": 0,
+        "childCount": 2
+      },
+      {
+        "id": 2,
+        "name": "Nước ngọt",
+        "parentId": 1,
+        "status": 1,
+        "imageUrl": null,
+        "level": 1,
+        "childCount": 0
+      }
+    ]
+  }
+  ```
+- **Mã lỗi:**
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `CATEGORY_VIEW`
+
+### 2.5 POST /api/products
+- **Mô tả:** Tạo sản phẩm mới kèm biến thể gốc, tồn kho ban đầu và lịch sử giá trong một transaction (UC42)
+- **Middleware:** `authenticate`, `protect(PRODUCT_CREATE)`, `validate(createProductSchema, 'body')`, `audit('PRODUCT_CREATE')`
+- **Request Body:**
+  ```json
+  {
+    "code": "SP00001",
+    "name": "Cà phê đen đá",
+    "categoryId": 1,
+    "baseUnit": "Ly",
+    "salePrice": 25000,
+    "barcode": "893500000001",
+    "unitType": "PIECE",
+    "minThreshold": 10
+  }
+  ```
+  *(Các trường bắt buộc: `code`, `name`, `baseUnit`, `salePrice`. `barcode`, `categoryId`, `unitType`, `minThreshold` là tùy chọn)*
+- **Response 201 (Created):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 1,
+      "code": "SP00001",
+      "name": "Cà phê đen đá",
+      "baseVariantId": 1,
+      "salePrice": 25000
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Dữ liệu không hợp lệ (mã sai format, thiếu trường bắt buộc, giá < 0,...)
+  - `400 CATEGORY_INACTIVE`: Danh mục đang ngừng hoạt động
+  - `404 CATEGORY_NOT_FOUND`: Danh mục không tồn tại
+  - `409 PRODUCT_CODE_EXISTS`: Mã sản phẩm đã tồn tại
+  - `409 BARCODE_EXISTS`: Mã vạch đã tồn tại
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_CREATE`
+
+### 2.6 GET /api/products/:id/variants/:variantId/price
+- **Mô tả:** Xem giá bán hiện tại của biến thể và lịch sử thay đổi giá tối đa 20 dòng gần nhất (UC46). Hỗ trợ alias `/api/products/:id/price` để xem biến thể gốc.
+- **Middleware:** `authenticate`, `protect(PRODUCT_PRICE_VIEW)`
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "product": {
+        "id": 1,
+        "code": "SP00001",
+        "name": "Cà phê đen đá",
+        "status": "Selling"
+      },
+      "variant": {
+        "id": 1,
+        "unitName": "Ly",
+        "conversionFactor": 1,
+        "salePrice": 25000,
+        "barcode": "893500000001"
+      },
+      "history": [
+        {
+          "oldSalePrice": 20000,
+          "newSalePrice": 25000,
+          "changedAt": "2026-11-09T03:00:00.000Z",
+          "changedByName": "Nguyễn Văn Quản Lý"
+        }
+      ]
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `404 PRODUCT_NOT_FOUND`: Sản phẩm không tồn tại
+  - `404 VARIANT_NOT_FOUND`: Biến thể không tồn tại hoặc không thuộc sản phẩm
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_PRICE_VIEW`
+
+### 2.7 PUT /api/products/:id/variants/:variantId/price
+- **Mô tả:** Cập nhật giá bán mới cho biến thể và ghi nhận lịch sử thay đổi trong transaction (UC46). Hỗ trợ alias `/api/products/:id/price` cho biến thể gốc.
+- **Middleware:** `authenticate`, `protect(PRODUCT_PRICE_UPDATE)`, `validate(updatePriceSchema, 'body')`, `audit('PRICE_UPDATE')`
+- **Request Body:**
+  ```json
+  {
+    "salePrice": 28000
+  }
+  ```
+- **Response 200 (Success):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "variant": {
+        "id": 1,
+        "productId": 1,
+        "unitName": "Ly",
+        "conversionFactor": 1,
+        "salePrice": 28000,
+        "barcode": "893500000001"
+      },
+      "newHistoryEntry": {
+        "oldSalePrice": 25000,
+        "newSalePrice": 28000,
+        "changedAt": "2026-11-09T03:15:00.000Z",
+        "changedByName": "Nguyễn Văn Quản Lý"
+      }
+    }
+  }
+  ```
+- **Mã lỗi:**
+  - `400 VALIDATION_FAILED`: Giá bán không hợp lệ (thiếu hoặc < 0)
+  - `400 PRICE_UNCHANGED`: Giá mới trùng với giá hiện tại
+  - `404 VARIANT_NOT_FOUND`: Biến thể không tồn tại hoặc không thuộc sản phẩm
+  - `401 UNAUTHENTICATED`: Chưa đăng nhập
+  - `403 FORBIDDEN`: Không có quyền `PRODUCT_PRICE_UPDATE`
