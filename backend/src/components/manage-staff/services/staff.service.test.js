@@ -61,7 +61,7 @@ test('UC66 self-lock is rejected before mutation with exact UC message',async t=
   await assert.rejects(service.changeAccountStatus(10,'locked',20),e=>e.status===409&&e.message==='Action denied. You cannot lock your own account');
   assert.equal(update.mock.callCount(),0);
 });
-test('UC66 lock/unlock preserve Staff employment data and use the atomic user-status/revocation operation',async t=>{
+test('UC66 lock/unlock preserve Staff employment data and update account status atomically',async t=>{
   const tx=fixture(t);
   const update=t.mock.method(users,'updateActiveStatus',async(user,transaction)=>{assert.equal(transaction,tx);assert.ok(['locked','active'].includes(user.isActive));});
   await service.changeAccountStatus(10,'locked',1);await service.changeAccountStatus(10,'active',1);

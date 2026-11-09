@@ -20,7 +20,10 @@ test('UC73 SQL Server atomic Cashier/Warehouse check-in and concurrency', { skip
       JOIN dbo.Roles r ON r.id = u.roleId
       WHERE s.employmentStatus = 'working'
         AND r.name IN ('Cashier', 'Warehouse Staff')
-        AND NOT EXISTS (SELECT 1 FROM dbo.WorkSchedules w WHERE w.staffId=s.id AND w.status='working')
+        AND NOT EXISTS (
+          SELECT 1 FROM dbo.WorkSchedules w
+          WHERE w.staffId=s.id AND w.status='working' AND w.workDate='2099-12-29'
+        )
       ORDER BY s.id;
     `);
     const cashier = actors.recordset.find((item) => item.role === 'Cashier');
@@ -51,6 +54,16 @@ test('UC73 SQL Server atomic Cashier/Warehouse check-in and concurrency', { skip
         `);
       scheduleIds.push(inserted.recordset[0].id);
     }
+
+    const stale = await pool.request()
+      .input('staffId', sql.BigInt, cashier.staffId)
+      .input('shiftId', sql.Int, shiftId)
+      .query(`
+        INSERT INTO dbo.WorkSchedules(staffId,shiftId,workDate,checkInTime,status,openingCash)
+        OUTPUT INSERTED.id
+        VALUES(@staffId,@shiftId,'2099-12-28','2099-12-28T08:00:00','working',0);
+      `);
+    scheduleIds.push(stale.recordset[0].id);
 
     const cashierUser = { staffId: Number(cashier.staffId), role: 'Cashier' };
     await assert.rejects(

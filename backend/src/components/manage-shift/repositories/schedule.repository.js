@@ -215,7 +215,10 @@ async function checkInAtomic({ scheduleId, staffId, openingCash, now = null }, t
       BEGIN SELECT 'WINDOW_CLOSED' AS outcome; RETURN; END;
     IF EXISTS (
       SELECT 1 FROM dbo.WorkSchedules WITH (UPDLOCK, HOLDLOCK)
-      WHERE staffId = @staffId AND status = 'working' AND id <> @scheduleId
+      WHERE staffId = @staffId
+        AND workDate = @workDate
+        AND status = 'working'
+        AND id <> @scheduleId
     ) BEGIN SELECT 'ACTIVE_SESSION_EXISTS' AS outcome; RETURN; END;
 
     UPDATE dbo.WorkSchedules

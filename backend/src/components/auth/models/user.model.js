@@ -13,7 +13,6 @@ class User extends BaseModel {
     passwordHash:          { type: sql.VarChar(255), sensitive: true },
     isActive:              { type: sql.VarChar(20) },
     requirePasswordChange: { type: sql.Bit },
-    tokenVersion:          { type: sql.Int, sensitive: true },
     createdAt:             { type: sql.DateTime2 },
   });
 

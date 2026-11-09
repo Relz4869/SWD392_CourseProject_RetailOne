@@ -24,9 +24,6 @@ async function authenticate(req, res, next) {
     if (!account || !account.canLogin()) {
       return next(new AppError(AUTH_ERRORS.ACCOUNT_LOCKED));
     }
-    if ((payload.tokenVersion ?? 0) !== (account.tokenVersion ?? 0)) {
-      return next(new AppError(ERRORS.TOKEN_INVALID));
-    }
     const passwordChangeRequired = typeof account.mustChangePassword === 'function'
       ? account.mustChangePassword() : Boolean(account.requirePasswordChange);
     const passwordAccess = req.baseUrl === '/api/auth' && ['/me','/change-password'].includes(req.path);
@@ -38,7 +35,6 @@ async function authenticate(req, res, next) {
       userId: account.userId,
       staffId: account.staffId,
       role: account.role,
-      tokenVersion: account.tokenVersion ?? 0,
       permissions: expandPermissions(payload.permissions),
     };
 

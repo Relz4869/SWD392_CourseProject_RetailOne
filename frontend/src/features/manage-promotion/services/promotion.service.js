@@ -1,7 +1,7 @@
 import api from '@/shared/services/apiClient';
 export const loadPromotions = () => api.get('/promotions');
 export const getPromotion = (id) => api.get(`/promotions/${id}`);
-export const createPromotion = (data, key) => api.post('/promotions', data, { headers: { 'Idempotency-Key': key } });
+export const createPromotion = (data) => api.post('/promotions', data);
 export const updateDraft = (id, data) => api.put(`/promotions/${id}/draft`, data);
 // Append semantics: removal uses its own immediate DELETE operation.
 export const assignTargets = (id, data) => api.put(`/promotions/${id}/targets`, data);

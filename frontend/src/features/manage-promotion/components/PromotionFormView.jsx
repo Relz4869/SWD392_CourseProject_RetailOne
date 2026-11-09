@@ -13,13 +13,13 @@ import { promotionText } from '../promotionText';
 
 const blank = { name: '', type: 'Percent', value: '', startDate: '', endDate: '', minInvoiceValue: '0', maxBudget: '' };
 const localDate = (value) => value ? new Date(new Date(value).getTime() + 7 * 3600000).toISOString().slice(0,16) : '';
-function validate(form, draft, retryUncertain = false) {
+function validate(form, draft) {
   const errors = {};
   if (!draft && !form.name.trim()) errors.name = 'Name is required';
   if (form.name.length > 255) errors.name = 'Maximum 255 characters';
   if ((!draft && form.value === '') || (form.value !== '' && (!Number.isFinite(Number(form.value)) || Number(form.value) < 0 || (form.type === 'Percent' && Number(form.value) > 100)))) errors.value = 'Invalid discount value';
   for (const key of ['startDate','endDate']) if (!draft && !form[key]) errors[key] = 'Invalid time';
-  if (!retryUncertain && form.startDate && new Date(`${form.startDate}+07:00`) < new Date()) errors.startDate = 'Invalid time';
+  if (form.startDate && new Date(`${form.startDate}+07:00`) < new Date()) errors.startDate = 'Invalid time';
   if (form.startDate && form.endDate && form.endDate < form.startDate) errors.endDate = 'Invalid time';
   for (const key of ['minInvoiceValue','maxBudget']) if (form[key] !== '' && (!Number.isFinite(Number(form[key])) || Number(form[key]) < 0 || (key === 'maxBudget' && Number(form[key]) === 0))) errors[key] = 'Invalid amount';
   for (const key of ['value','minInvoiceValue','maxBudget']) {
@@ -35,7 +35,7 @@ export default function PromotionFormView() {
   const [loading, setLoading] = useState(!!draftId), [loadFailed, setLoadFailed] = useState(false);
   const [busy, setBusy] = useState(false), [leaving, setLeaving] = useState(null);
   const dirty = JSON.stringify(form) !== baseline;
-  const guard = useRef(false), saving = useRef(false), request = useRef(null), allowLeave = useRef(false);
+  const guard = useRef(false), saving = useRef(false), allowLeave = useRef(false);
   guard.current = dirty;
   async function load() {
     if (!draftId) return;
@@ -85,20 +85,15 @@ export default function PromotionFormView() {
   async function save(draft) {
     if (saving.current) return;
     const body = { ...form, mode: draft ? 'draft' : 'publish', startDate: form.startDate ? `${form.startDate}+07:00` : null, endDate: form.endDate ? `${form.endDate}+07:00` : null };
-    const snapshot = JSON.stringify(body);
-    const issues = validate(form, draft, request.current?.uncertain && request.current.snapshot === snapshot); setErrors(issues); setError('');
+    const issues = validate(form, draft); setErrors(issues); setError('');
     if (Object.keys(issues).length) return;
     saving.current = true; setBusy(true);
-    if (!request.current || request.current.snapshot !== snapshot) request.current = {
-      key: globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`, snapshot,
-    };
     try {
-      const promotion = draftId ? await api.updateDraft(draftId, body) : await api.createPromotion(body, request.current.key);
+      const promotion = draftId ? await api.updateDraft(draftId, body) : await api.createPromotion(body);
       allowLeave.current = true; guard.current = false; setBaseline(JSON.stringify(form));
       if (draft) router.push(`/promotions?savedDraft=${promotion.id}`);
       else router.push(`/promotions/${promotion.id}/assign?created=1`);
     } catch (err) {
-      request.current.uncertain = err.status === 0 || err.status >= 500;
       setError(err.message || 'Không thể lưu. Vui lòng thử lại.'); setErrors(err.details || {});
     }
     finally { saving.current = false; setBusy(false); }

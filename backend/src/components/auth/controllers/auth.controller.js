@@ -14,7 +14,7 @@ async function me(req, res) {
 }
 
 async function changePassword(req,res) {
-  const result=await authService.changePassword(req.user.userId,req.user.tokenVersion,req.body);
+  const result=await authService.changePassword(req.user.userId,req.body);
   res.set({'Cache-Control':'no-store','Pragma':'no-cache'});
   return ok(res,result);
 }
