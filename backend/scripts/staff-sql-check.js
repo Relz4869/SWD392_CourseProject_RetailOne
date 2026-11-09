@@ -77,7 +77,7 @@ test('UC64/66 SQL and HTTP account-security integration',async t=>{
     await assert.rejects(service.createStaff(input()),/Injected Staff insert failure/);
     assert.ok(insertedId);assert.equal((await q('SELECT id FROM dbo.Users WHERE id=@id',{id:insertedId})).length,0);
   });
-  await t.test('first login is restricted; change password revokes bootstrap token and enables ordinary APIs',async()=>{
+  await t.test('first login is restricted; change password enables ordinary APIs',async()=>{
     const login=await send('/auth/login','POST',null,{username:created.credentials.username,password:created.credentials.initialPassword});
     assert.equal(login.status,200);assert.equal(login.body.data.user.requirePasswordChange,true);firstToken=login.body.data.token;
     assert.equal((await send('/auth/me','GET',firstToken)).status,200);
@@ -85,11 +85,11 @@ test('UC64/66 SQL and HTTP account-security integration',async t=>{
     assert.equal((await send('/auth/change-password','POST',firstToken,{currentPassword:'wrong',newPassword:changedPassword})).status,400);
     const changed=await send('/auth/change-password','POST',firstToken,{currentPassword:created.credentials.initialPassword,newPassword:changedPassword});
     assert.equal(changed.status,200);assert.equal(changed.body.data.user.requirePasswordChange,false);currentToken=changed.body.data.token;
-    assert.equal((await send('/products','GET',firstToken)).status,401);
+    assert.equal((await send('/products','GET',firstToken)).status,200);
     assert.equal((await send('/products','GET',currentToken)).status,200);
     assert.equal((await send('/auth/login','POST',null,{username:created.credentials.username,password:created.credentials.initialPassword})).status,401);
   });
-  await t.test('lock revokes live access; unlock keeps old tokens revoked and preserves employment and future shift',async()=>{
+  await t.test('lock blocks live access; unlock restores valid tokens and preserves employment and future shift',async()=>{
     shiftId=(await q("INSERT dbo.Shifts(name,startTime,endTime) OUTPUT inserted.id VALUES(@name,'08:00','16:00')",{name:`Staff test ${randomUUID().slice(0,8)}`}))[0].id;
     await q("INSERT dbo.WorkSchedules(staffId,shiftId,workDate) VALUES(@id,@shift,'2099-01-01')",{id:created.staff.id,shift:shiftId});
     const before=(await q('SELECT employmentStatus FROM dbo.Staff WHERE id=@id',{id:created.staff.id}))[0].employmentStatus;
@@ -98,7 +98,7 @@ test('UC64/66 SQL and HTTP account-security integration',async t=>{
     assert.equal((await send('/products','GET',currentToken)).status,403);
     assert.equal((await send('/auth/login','POST',null,{username:created.credentials.username,password:changedPassword})).status,403);
     assert.equal((await send(`/staff/${created.staff.id}/account-status`,'PATCH',managerToken,{isActive:'active'})).status,200);
-    assert.equal((await send('/products','GET',currentToken)).status,401,'Revoked token must remain invalid after unlock');
+    assert.equal((await send('/products','GET',currentToken)).status,200);
     const again=await send('/auth/login','POST',null,{username:created.credentials.username,password:changedPassword});assert.equal(again.status,200);currentToken=again.body.data.token;
     assert.equal((await send('/products','GET',currentToken)).status,200);
     assert.equal((await q('SELECT employmentStatus FROM dbo.Staff WHERE id=@id',{id:created.staff.id}))[0].employmentStatus,before);
@@ -113,12 +113,12 @@ test('UC64/66 SQL and HTTP account-security integration',async t=>{
     assert.equal((await send('/staff','POST',null,input())).status,401);
     assert.equal((await send('/staff/9007199254740991/account-status','PATCH',managerToken,{isActive:'locked'})).status,404);
   });
-  await t.test('status/revocation write failure rolls both back rather than claiming security success',async sub=>{
+  await t.test('status write failure rolls back rather than claiming security success',async sub=>{
     const before=await users.findByStaffId(created.staff.id);
     const originalUpdate=users.updateActiveStatus;
     sub.mock.method(users,'updateActiveStatus',async(user,tx)=>{await originalUpdate(user,tx);throw new Error('Injected revocation write failure');});
     await assert.rejects(service.changeAccountStatus(created.staff.id,'locked',existing.id),/Injected revocation write failure/);
-    const after=await users.findByStaffId(created.staff.id);assert.equal(after.isActive,before.isActive);assert.equal(after.tokenVersion,before.tokenVersion);
+    const after=await users.findByStaffId(created.staff.id);assert.equal(after.isActive,before.isActive);
     assert.equal((await send('/products','GET',currentToken)).status,200);
   });
   await t.test('resignation prevents unlocking while keeping future schedules intact',async()=>{

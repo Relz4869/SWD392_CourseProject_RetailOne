@@ -73,3 +73,5 @@ pnpm-debug.log*
 Thumbs.db
 Desktop.ini
 
+# Antigravity AI Agent Instructions (HiepND)
+/docs/antigravity-hiepnd/

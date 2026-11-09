@@ -29,7 +29,6 @@ const messages = {
   'Assignment not found. Category-derived products must be removed through their category link.': 'Không tìm thấy liên kết gán. Với sản phẩm được áp dụng theo danh mục, hãy bỏ gán danh mục tương ứng.',
   'Promotion overlap requires confirmation': 'Vui lòng xác nhận cách xử lý khuyến mãi trùng thời gian',
   'This request key was already used. Start a new submission.': 'Yêu cầu này đã được sử dụng. Vui lòng tải lại trang và gửi yêu cầu mới.',
-  'A valid Idempotency-Key is required': 'Yêu cầu lưu không hợp lệ. Vui lòng tải lại trang và thử lại.',
   'Invalid ID': 'Mã không hợp lệ',
   'Invalid category ID': 'Mã danh mục không hợp lệ',
   'Invalid promotion data': 'Dữ liệu khuyến mãi không hợp lệ',

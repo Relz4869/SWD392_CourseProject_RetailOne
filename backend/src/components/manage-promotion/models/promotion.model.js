@@ -18,8 +18,6 @@ class Promotion extends BaseModel {
     endDate:         { type: sql.DateTime2, nullable: true },
     status:          { type: sql.VarChar(20) },
     createdAt:       { type: sql.DateTime2 },
-    requestKey:      { type: sql.VarChar(100), nullable: true, sensitive: true },
-    requestHash:     { type: sql.VarChar(64), nullable: true, sensitive: true },
   });
 
   isDeleted() {

@@ -1,0 +1,81 @@
+.page {
+  --handover-heading: #006241;
+  --handover-action: #00754a;
+  --handover-dark: #1e3932;
+  --handover-error: #c82014;
+  display: grid;
+  gap: 24px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.contextCard,
+.countCard,
+.completedCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+
+.contextCard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contextCard div { display: grid; gap: 4px; }
+.contextCard span { color: var(--ink-600); font-size: 13px; }
+.contextCard strong { color: var(--ink-900); font-size: 15px; }
+.countCard { display: grid; gap: 12px; }
+.sectionHeading { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; margin-bottom: 8px; }
+.sectionHeading h2, .completedCard h2 { color: var(--handover-heading); font-size: 20px; margin: 4px 0 0; }
+.sectionHeading p { color: var(--ink-600); margin: 0; max-width: 420px; }
+.step { color: var(--handover-action); font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+
+.denominationHeader,
+.denominationRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(190px, 1fr) minmax(130px, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.denominationHeader { color: var(--ink-600); font-size: 13px; font-weight: 600; padding: 0 8px; }
+.denominationHeader span:last-child { text-align: right; }
+.denominationRow { min-height: 56px; padding: 8px; border-top: 1px solid var(--border); }
+.denominationLabel { font-weight: 600; }
+.subtotal { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.stepper { display: grid; grid-template-columns: 44px minmax(64px, 1fr) 44px; gap: 8px; }
+.stepper button,
+.stepper input {
+  min-height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink-900);
+  font: inherit;
+  text-align: center;
+}
+.stepper button { border-radius: 50px; color: var(--handover-action); font-size: 20px; cursor: pointer; }
+.stepper button:disabled { opacity: .4; cursor: not-allowed; }
+.totalRow { display: flex; justify-content: space-between; align-items: center; padding: 20px 8px 8px; border-top: 2px solid var(--handover-dark); }
+.totalRow strong { color: var(--handover-dark); font-family: var(--font-mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+.warning { padding: 12px 16px; border-left: 4px solid var(--handover-error); background: #fdecea; color: var(--ink-900); border-radius: 8px; }
+.completedCard { display: grid; gap: 12px; }
+.completedCard p { margin: 0; }
+
+@media (max-width: 760px) {
+  .contextCard { grid-template-columns: repeat(2, 1fr); }
+  .sectionHeading { display: grid; }
+  .denominationHeader { display: none; }
+  .denominationRow { grid-template-columns: 1fr; gap: 8px; }
+  .subtotal { text-align: left; }
+  .subtotal::before { content: 'Thành tiền: '; color: var(--ink-600); font-family: var(--font-sans); }
+}
+
+@media (max-width: 460px) {
+  .contextCard { grid-template-columns: 1fr; }
+  .contextCard, .countCard, .completedCard { padding: 16px; }
+}

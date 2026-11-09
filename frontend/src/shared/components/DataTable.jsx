@@ -68,6 +68,17 @@ export default function DataTable({
               key={row[rowKey] ?? index}
               className={onRowClick ? styles.clickableRow : undefined}
               onClick={onRowClick ? () => onRowClick(row) : undefined}
+              tabIndex={onRowClick ? 0 : undefined}
+              onKeyDown={
+                onRowClick
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onRowClick(row);
+                      }
+                    }
+                  : undefined
+              }
             >
               {columns.map((col) => (
                 <td key={col.key} className={col.align === 'right' ? styles.alignRight : undefined}>

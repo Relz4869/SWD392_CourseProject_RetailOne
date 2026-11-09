@@ -4,7 +4,7 @@ const PromotionProduct = require('../models/promotionProduct.model');
 
 // DATETIME2 stores Asia/Bangkok wall time, independent of the execution host timezone.
 const storeTime = (date) => date == null ? null : new Date(new Date(date).getTime() + 7 * 3600000).toISOString().slice(0, 23);
-const projection = `p.id,p.name,p.type,p.value,p.minInvoiceValue,p.maxBudget,p.status,p.requestKey,p.requestHash,
+const projection = `p.id,p.name,p.type,p.value,p.minInvoiceValue,p.maxBudget,p.status,
   CONVERT(varchar(33),p.startDate,126) AS startDate, CONVERT(varchar(33),p.endDate,126) AS endDate,
   CONVERT(varchar(33),p.createdAt,126) AS createdAt`;
 function hydrate(row) {
@@ -35,12 +35,8 @@ async function findAll(tx) {
   const result = await query(`SELECT ${projection} FROM dbo.Promotions p WHERE p.status<>'Deleted' ORDER BY p.id DESC`, {}, tx);
   return result.recordset.map(hydrate);
 }
-async function findByRequestKey(key, tx) {
-  const result = await query(`SELECT ${projection} FROM dbo.Promotions p WHERE requestKey=@key`, { key: [sql.VarChar(100), key] }, tx);
-  return hydrate(result.recordset[0]);
-}
 async function save(promotion, tx) {
-  const cols = ['name','type','value','minInvoiceValue','maxBudget','startDate','endDate','status','createdAt','requestKey','requestHash'];
+  const cols = ['name','type','value','minInvoiceValue','maxBudget','startDate','endDate','status','createdAt'];
   const params = {};
   for (const key of cols) {
     const isDate = ['startDate','endDate','createdAt'].includes(key);
@@ -108,6 +104,6 @@ async function invoiceUsage(id, tx) {
 async function deleteOrHide(id, soft, tx) {
   await query(soft ? "UPDATE dbo.Promotions SET status='Deleted' WHERE id=@id" : 'DELETE dbo.Promotions WHERE id=@id', { id: [sql.BigInt, id] }, tx);
 }
-module.exports = { transaction, findById, findAll, findByRequestKey, save, findPromotionTargets,
+module.exports = { transaction, findById, findAll, save, findPromotionTargets,
   findExclusions, findOverlappingPromotions, savePromotionTargets, removeTarget, excludeProduct, invoiceUsage, deleteOrHide, storeTime };
 

@@ -39,3 +39,16 @@ test('Shift: isLate check', () => {
   assert.strictEqual(shift.isLate('08:00:01'), true);
 });
 
+test('Shift (UC75 / BR-76): hasValidTimeRange validates endTime > startTime', () => {
+  // Valid range
+  const validShift = new Shift({ startTime: '08:00:00', endTime: '16:00:00' });
+  assert.strictEqual(validShift.hasValidTimeRange(), true);
+
+  // Equal times (invalid)
+  const equalShift = new Shift({ startTime: '08:00:00', endTime: '08:00:00' });
+  assert.strictEqual(equalShift.hasValidTimeRange(), false);
+
+  // Reverse times / overnight (invalid under BR-76)
+  const reverseShift = new Shift({ startTime: '22:00:00', endTime: '06:00:00' });
+  assert.strictEqual(reverseShift.hasValidTimeRange(), false);
+});
