@@ -13,3 +13,23 @@ export async function getProducts(params = {}, options = {}) {
   });
 }
 
+export async function createProduct(data, options = {}) {
+  return apiClient.post('/products', data, {
+    signal: options.signal,
+  });
+}
+
+export async function getProductPrice(productId, variantId, options = {}) {
+  const url = variantId
+    ? `/products/${productId}/variants/${variantId}/price`
+    : `/products/${productId}/price`;
+  return apiClient.get(url, { signal: options.signal });
+}
+
+export async function updateSalePrice(productId, variantId, salePrice, options = {}) {
+  const url = variantId
+    ? `/products/${productId}/variants/${variantId}/price`
+    : `/products/${productId}/price`;
+  return apiClient.put(url, { salePrice }, { signal: options.signal });
+}
+

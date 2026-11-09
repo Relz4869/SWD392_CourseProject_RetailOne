@@ -13,7 +13,6 @@ class LoginAccount extends BaseModel {
     passwordHash:          { type: sql.VarChar(255), sensitive: true },
     isActive:              { type: sql.VarChar(20) },
     requirePasswordChange: { type: sql.Bit },
-    tokenVersion:          { type: sql.Int, sensitive: true },
     roleId:                { type: sql.Int },
     role:                  { type: sql.NVarChar(50) },
     staffId:               { type: sql.BigInt, bigint: true },
@@ -45,7 +44,6 @@ class LoginAccount extends BaseModel {
       userId: this.userId,
       staffId: this.staffId,
       role: this.role,
-      tokenVersion: this.tokenVersion ?? 0,
     };
   }
 

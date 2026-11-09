@@ -38,19 +38,13 @@ test('UC53/54/56 real SQL persistence, rollback and invoice-history checks', asy
   const productId = await addProduct();
   const create = async () => {
     const result = await service.createPromotion({ name: `Test offer ${suffix}`, type: 'Percent', value: 10,
-      startDate: new Date(Date.now()+3600000).toISOString(), endDate: new Date(Date.now()+7200000).toISOString(), minInvoiceValue: 0 }, `test-${randomUUID()}`);
+      startDate: new Date(Date.now()+3600000).toISOString(), endDate: new Date(Date.now()+7200000).toISOString(), minInvoiceValue: 0 });
     promotionIds.push(result.id); return result;
   };
   let original, replacement;
-  await t.test('create, idempotent retry, partial draft and draft publishing', async () => {
-    const key = `test-${randomUUID()}`;
-    const [draft, simultaneousRetry] = await Promise.all([
-      service.createPromotion({ mode: 'draft' }, key),
-      service.createPromotion({ mode: 'draft' }, key),
-    ]);
+  await t.test('create, partial draft and draft publishing', async () => {
+    const draft = await service.createPromotion({ mode: 'draft' });
     promotionIds.push(draft.id);
-    assert.equal(simultaneousRetry.id, draft.id);
-    assert.equal((await service.createPromotion({ mode: 'draft' }, key)).id, draft.id);
     assert.equal((await service.getDetail(draft.id)).promotion.status, 'Draft');
     const publishBody = { name: `Published ${suffix}`, type: 'Amount', value: 0,
       startDate: new Date(Date.now()+3600000).toISOString(), endDate: new Date(Date.now()+7200000).toISOString() };

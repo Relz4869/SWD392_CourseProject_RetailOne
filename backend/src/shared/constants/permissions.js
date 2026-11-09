@@ -17,9 +17,13 @@ const PERMISSIONS = Object.freeze({
   STAFF_CHANGE_STATUS: 'STAFF_CHANGE_STATUS',
   SHIFT_VIEW: 'SHIFT_VIEW',
   SHIFT_CREATE: 'SHIFT_CREATE',
+  SHIFT_ASSIGN: 'SHIFT_ASSIGN',
+  SHIFT_CHECKIN: 'SHIFT_CHECKIN',
   SCHEDULE_ASSIGN: 'SCHEDULE_ASSIGN',
   SCHEDULE_CHECK_IN: 'SCHEDULE_CHECK_IN',
+  SHIFT_CASH_HANDOVER: 'SHIFT_CASH_HANDOVER',
   CASH_HANDOVER_CREATE: 'CASH_HANDOVER_CREATE',
+  CASH_REPORT_VIEW: 'CASH_REPORT_VIEW',
   CASH_HANDOVER_REPORT: 'CASH_HANDOVER_REPORT',
 });
 
@@ -40,9 +44,13 @@ const PERMISSION_DESCRIPTIONS = Object.freeze({
   STAFF_CHANGE_STATUS: 'Khóa/mở tài khoản nhân viên (UC66)',
   SHIFT_VIEW: 'Xem ca làm',
   SHIFT_CREATE: 'Tạo ca làm (UC75)',
+  SHIFT_ASSIGN: 'Phân ca (UC81, schema hiện hành)',
+  SHIFT_CHECKIN: 'Chấm công vào ca (UC73, schema hiện hành)',
   SCHEDULE_ASSIGN: 'Phân ca (UC81)',
   SCHEDULE_CHECK_IN: 'Chấm công vào ca (UC73)',
+  SHIFT_CASH_HANDOVER: 'Bàn giao tiền cuối ca (UC82, schema hiện hành)',
   CASH_HANDOVER_CREATE: 'Bàn giao tiền cuối ca (UC82)',
+  CASH_REPORT_VIEW: 'Báo cáo bàn giao tiền (UC83, schema hiện hành)',
   CASH_HANDOVER_REPORT: 'Báo cáo bàn giao tiền (UC83)',
 });
 
@@ -52,12 +60,15 @@ const P = PERMISSIONS;
 // NFR RBAC: Warehouse Staff must not see prices, revenue or HR data.
 const ROLE_PERMISSIONS = Object.freeze({
   [ROLES.MANAGER]: Object.freeze(
-    ALL.filter((k) => k !== P.SCHEDULE_CHECK_IN && k !== P.CASH_HANDOVER_CREATE),
+    ALL.filter((k) => k !== P.SHIFT_CHECKIN && k !== P.SCHEDULE_CHECK_IN && k !== P.CASH_HANDOVER_CREATE),
   ),
   [ROLES.CASHIER]: Object.freeze([
-    P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.PRODUCT_PRICE_VIEW, P.SCHEDULE_CHECK_IN, P.CASH_HANDOVER_CREATE,
+    P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.PRODUCT_PRICE_VIEW, P.SHIFT_VIEW,
+    P.SHIFT_CHECKIN, P.SCHEDULE_CHECK_IN, P.SHIFT_CASH_HANDOVER, P.CASH_HANDOVER_CREATE,
   ]),
-  [ROLES.WAREHOUSE]: Object.freeze([P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.SCHEDULE_CHECK_IN]),
+  [ROLES.WAREHOUSE]: Object.freeze([
+    P.CATEGORY_VIEW, P.PRODUCT_VIEW, P.SHIFT_VIEW, P.SHIFT_CHECKIN, P.SCHEDULE_CHECK_IN,
+  ]),
 });
 
 /** Compatibility with existing databases that grant promotion mutations as one feature. */

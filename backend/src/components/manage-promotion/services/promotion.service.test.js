@@ -56,18 +56,13 @@ test('UC53 server-time statuses and GMT+7 persistence do not depend on host time
   assert.equal(p.effectiveStatus(new Date('2030-03-01T00:00:00Z')), 'Expired');
   assert.equal(repo.storeTime(new Date('2030-01-01T00:00:00Z')), '2030-01-01T07:00:00.000');
 });
-test('UC53 create persists once and reuses a committed request on network retry', async (t) => {
+test('UC53 create validates and persists a new promotion in one transaction', async (t) => {
   const tx = fixture(t);
-  t.mock.method(repo, 'findByRequestKey', async () => null);
   const save = t.mock.method(repo, 'save', async (p, transaction) => { assert.equal(transaction, tx); p.id = 9; return p; });
   const body = { ...valid, startDate: '2090-02-01T10:00:00+07:00', endDate: '2090-03-01T10:00:00+07:00' };
-  const created = await service.createPromotion(body, 'request-123');
+  const created = await service.createPromotion(body);
   assert.equal(created.id, 9);
-  assert.equal(created.toJSON().requestKey, undefined);
-  repo.findByRequestKey.mock.mockImplementation(async () => created);
-  assert.equal((await service.createPromotion(body, 'request-123')).id, 9);
   assert.equal(save.mock.callCount(), 1);
-  await assert.rejects(service.createPromotion({ ...body, name: 'Changed' }, 'request-123'), (e) => e.status === 409);
 });
 test('UC53 save failure propagates without success, and draft updates retain the same ID', async (t) => {
   fixture(t, new Promotion({ ...future(), status: 'Draft' }));

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import DataTable from '@/shared/components/DataTable';
 import { getVisibleColumns } from '../constants/productColumns';
 
@@ -13,11 +14,15 @@ export default function ProductTable({
   loading = false,
   emptyContent = null,
 }) {
+  const router = useRouter();
   const columns = useMemo(() => getVisibleColumns(role), [role]);
 
   const handleRowClick = (row) => {
-    // TODO UC49: Navigate to Product Detail view
-    console.log('Selected product id:', row.id);
+    if (!row || !row.id) return;
+    const url = row.baseVariantId
+      ? `/products/${row.id}/price?variantId=${row.baseVariantId}`
+      : `/products/${row.id}/price`;
+    router.push(url);
   };
 
   return (

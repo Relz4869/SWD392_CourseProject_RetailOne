@@ -1,3 +1,4 @@
+// Owner: MaiCT | UC64, UC66
 const { randomBytes } = require('node:crypto');
 const AppError = require('../../../shared/utils/AppError');
 const { hashPassword } = require('../../../shared/utils/password');
@@ -6,6 +7,19 @@ const users = require('../../auth/repositories/user.repository');
 const roles = require('../../auth/repositories/role.repository');
 const Staff = require('../models/staff.model');
 const User = require('../../auth/models/user.model');
+
+async function listActiveForScheduling(tx) {
+  const staff = await repo.findAllActiveForScheduling(tx);
+  return staff.map((member) => ({
+    id: member.id,
+    fullName: member.fullName,
+    employmentStatus: member.employmentStatus,
+  }));
+}
+
+async function getForScheduling(staffId, tx) {
+  return repo.findByIdForScheduling(staffId, tx);
+}
 
 function fail(status, code, message, details) { throw new AppError({ status, code, message }, details); }
 function staffId(value) {
@@ -88,5 +102,14 @@ async function getStaff(id) {
     return view(staff,tx);
   });
 }
-module.exports={validate,createStaff,changeAccountStatus,listStaff,getStaff,getRoles:()=>roles.findAll()};
+module.exports = {
+  validate,
+  createStaff,
+  changeAccountStatus,
+  listStaff,
+  getStaff,
+  getRoles: () => roles.findAll(),
+  listActiveForScheduling,
+  getForScheduling,
+};
 

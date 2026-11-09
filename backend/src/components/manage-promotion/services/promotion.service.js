@@ -1,4 +1,3 @@
-const { createHash } = require('node:crypto');
 const AppError = require('../../../shared/utils/AppError');
 const Promotion = require('../models/promotion.model');
 const repo = require('../repositories/promotion.repository');
@@ -49,20 +48,11 @@ async function required(promotionId, tx) {
   if (!promotion || promotion.isDeleted()) fail(404, 'Promotion not found');
   return promotion;
 }
-async function createPromotion(data, requestKey) {
-  if (typeof requestKey !== 'string' || !/^[\w:-]{8,100}$/.test(requestKey)) fail(400, 'A valid Idempotency-Key is required');
+async function createPromotion(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) fail(400, 'Invalid promotion data');
-  const hash = createHash('sha256').update(JSON.stringify(data)).digest('hex');
   return repo.transaction(async (tx) => {
-    const previous = await repo.findByRequestKey(requestKey, tx);
-    if (previous) {
-      if (previous.requestHash !== hash || previous.isDeleted()) fail(409, 'This request key was already used. Start a new submission.');
-      return previous;
-    }
     const promotion = validate(data);
     promotion.createdAt = new Date();
-    promotion.requestKey = requestKey;
-    promotion.requestHash = hash;
     return repo.save(promotion, tx);
   });
 }
@@ -82,7 +72,7 @@ async function updateDraft(promotionId, data) {
       fail(409, 'Only drafts can be edited here');
     }
     const promotion = validate(data);
-    Object.assign(promotion, { id: current.id, createdAt: current.createdAt, requestKey: current.requestKey, requestHash: current.requestHash });
+    Object.assign(promotion, { id: current.id, createdAt: current.createdAt });
     return repo.save(promotion, tx);
   });
 }

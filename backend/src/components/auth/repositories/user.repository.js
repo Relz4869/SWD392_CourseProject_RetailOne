@@ -7,7 +7,7 @@ async function findLoginAccountByUsername(username, tx) {
   const req = await request(tx);
   req.input('username', sql.VarChar(50), username);
   const result = await req.query(`
-    SELECT u.id AS userId, u.username, u.passwordHash, u.isActive, u.requirePasswordChange, u.tokenVersion,
+    SELECT u.id AS userId, u.username, u.passwordHash, u.isActive, u.requirePasswordChange,
            u.roleId, r.name AS role,
            s.id AS staffId, s.fullName, s.employmentStatus
     FROM dbo.Users u
@@ -26,7 +26,7 @@ async function findLoginAccountById(userId, tx) {
   const req = await request(tx);
   req.input('userId', sql.Int, userId);
   const result = await req.query(`
-    SELECT u.id AS userId, u.username, u.passwordHash, u.isActive, u.requirePasswordChange, u.tokenVersion,
+    SELECT u.id AS userId, u.username, u.passwordHash, u.isActive, u.requirePasswordChange,
            u.roleId, r.name AS role,
            s.id AS staffId, s.fullName, s.employmentStatus
     FROM dbo.Users u
@@ -70,14 +70,13 @@ async function findByStaffId(staffId, tx) {
 async function updateActiveStatus(user, tx) {
   const req = await request(tx);
   req.input('id', sql.Int, user.id).input('status', sql.VarChar(20), user.isActive);
-  // DB status and token revocation succeed or roll back together. Unlock also requires a fresh login.
-  await req.query('UPDATE dbo.Users SET isActive=@status,tokenVersion=tokenVersion+1 WHERE id=@id');
+  await req.query('UPDATE dbo.Users SET isActive=@status WHERE id=@id');
 }
-async function updatePassword(userId, passwordHash, expectedVersion, tx) {
+async function updatePassword(userId, passwordHash, tx) {
   const req = await request(tx);
-  req.input('id', sql.Int, userId).input('hash', sql.VarChar(255), passwordHash).input('version', sql.Int, expectedVersion);
-  const result = await req.query(`UPDATE dbo.Users SET passwordHash=@hash,requirePasswordChange=0,tokenVersion=tokenVersion+1
-    WHERE id=@id AND tokenVersion=@version AND isActive='active'; SELECT @@ROWCOUNT AS updated;`);
+  req.input('id', sql.Int, userId).input('hash', sql.VarChar(255), passwordHash);
+  const result = await req.query(`UPDATE dbo.Users SET passwordHash=@hash,requirePasswordChange=0
+    WHERE id=@id AND isActive='active'; SELECT @@ROWCOUNT AS updated;`);
   return result.recordset[0].updated === 1;
 }
 
