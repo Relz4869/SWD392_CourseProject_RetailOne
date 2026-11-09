@@ -12,12 +12,10 @@ class Category extends BaseModel {
     imageUrl: { type: sql.NVarChar(500), nullable: true },
   });
 
-  /** UC39, UC42 */
   isActive() {
     return this.status === true || this.status === 1;
   }
 
-  /** UC39 */
   isRoot() {
     return this.parentId == null;
   }

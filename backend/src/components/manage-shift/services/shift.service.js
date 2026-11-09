@@ -81,7 +81,6 @@ async function createShift(data = {}) {
     throw err;
   }
 }
-
 module.exports = {
   listShifts,
   createShift,

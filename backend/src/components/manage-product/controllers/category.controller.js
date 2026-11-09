@@ -1,5 +1,3 @@
-// Owner: PhuNT | UC39
-// Chỉ lấy dữ liệu từ req, gọi service, trả res. Không viết SQL, không gọi repository.
 const asyncHandler = require('../../../shared/utils/asyncHandler');
 const { ok, created } = require('../../../shared/utils/response');
 const categoryService = require('../services/category.service');

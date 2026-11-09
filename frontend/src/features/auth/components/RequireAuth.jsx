@@ -1,19 +1,21 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from './AuthProvider';
 import Spinner from '@/shared/components/Spinner';
 
 export default function RequireAuth({ children, permission }) {
   const router = useRouter();
+  const pathname=usePathname();
   const { user, permissions, status } = useAuth();
 
   useEffect(() => {
     if (status === 'guest') {
       router.replace('/login');
     }
-  }, [status, router]);
+    if (status==='authenticated' && user?.requirePasswordChange && pathname!=='/change-password') router.replace('/change-password');
+  }, [status, router, user, pathname]);
 
   if (status === 'loading') {
     return <Spinner center size={32} />;
@@ -22,6 +24,7 @@ export default function RequireAuth({ children, permission }) {
   if (status === 'guest' || !user) {
     return null;
   }
+  if (user.requirePasswordChange && pathname!=='/change-password') return null;
 
   const allowed = !permission || (Array.isArray(permission)
     ? permission.some((key) => permissions.includes(key))

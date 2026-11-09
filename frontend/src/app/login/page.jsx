@@ -8,13 +8,13 @@ import Spinner from '@/shared/components/Spinner';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { status } = useAuth();
+  const { status, user } = useAuth();
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.replace('/products');
+      router.replace(user?.requirePasswordChange ? '/change-password' : '/products');
     }
-  }, [status, router]);
+  }, [status, router, user]);
 
   if (status === 'loading') {
     return <Spinner center size={32} />;

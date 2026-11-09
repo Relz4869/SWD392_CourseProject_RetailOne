@@ -55,8 +55,8 @@ export default function LoginForm() {
 
     setLoading(true);
     try {
-      await login(trimmedUser, password);
-      router.replace('/products');
+      const result=await login(trimmedUser, password);
+      router.replace(result.user.requirePasswordChange ? '/change-password' : '/products');
     } catch (err) {
       if (err.code === 'INVALID_CREDENTIALS') {
         setErrorMsg('Sai tên đăng nhập hoặc mật khẩu.');
@@ -64,8 +64,12 @@ export default function LoginForm() {
         setErrorMsg('Tài khoản đã bị khóa. Vui lòng liên hệ quản lý.');
       } else if (err.code === 'VALIDATION_FAILED' && err.details) {
         setFieldErrors(err.details);
-      } else {
+      } else if (err.code === 'NETWORK_ERROR' || err.status === 0) {
         setErrorMsg('Không kết nối được máy chủ. Vui lòng thử lại.');
+      } else if (err.status >= 500) {
+        setErrorMsg('Máy chủ gặp lỗi khi đăng nhập. Vui lòng kiểm tra log backend và thử lại.');
+      } else {
+        setErrorMsg(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
       }
     } finally {
       setLoading(false);

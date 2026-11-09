@@ -28,6 +28,11 @@ apiClient.interceptors.response.use(
     const status = error.response ? error.response.status : 0;
     const body = (error.response && error.response.data) || {};
     const url = (error.config && error.config.url) || '';
+    if (body.code==='PASSWORD_CHANGE_REQUIRED' && typeof window!=='undefined') window.location.href='/change-password';
+    if (body.code==='ACCOUNT_LOCKED' && !url.includes('/auth/login') && typeof window!=='undefined') {
+      clearToken();
+      window.location.href='/login?locked=1';
+    }
 
     if (status === 401 && !url.includes('/auth/login') && typeof window !== 'undefined') {
       clearToken();

@@ -24,12 +24,10 @@ class Product extends BaseModel {
     imageUrl:             { type: sql.NVarChar(500), nullable: true },
   });
 
-  /** UC48 */
   isSellable() {
     return this.status === Product.STATUS.SELLING;
   }
 
-  /** UC54 */
   canBeAssignedToPromotion() {
     return this.isSellable();
   }

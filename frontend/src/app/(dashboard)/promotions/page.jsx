@@ -1,6 +1,9 @@
-import ComingSoon from '@/shared/components/ComingSoon';
+import { PromotionListView } from '@/features/manage-promotion';
+import RequireAuth from '@/features/auth/components/RequireAuth';
+import { Suspense } from 'react';
+import Spinner from '@/shared/components/Spinner';
 
 export default function PromotionsPage() {
-  return <ComingSoon title="Khuyến mãi" owner="MaiCT" ucs="UC53, UC54, UC56" />;
+  return <RequireAuth permission="PROMOTION_VIEW"><Suspense fallback={<Spinner center />}><PromotionListView /></Suspense></RequireAuth>;
 }
 

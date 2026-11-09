@@ -1,5 +1,3 @@
-// Owner: HiepND | UC81, UC73
-// Tables: WorkSchedules
 const router = require('express').Router();
 const authenticate = require('../../auth/middlewares/authenticate');
 const { protect } = require('../../../shared/middlewares/permission.middleware');

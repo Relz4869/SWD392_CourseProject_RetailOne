@@ -1,5 +1,3 @@
-// Owner: HiepND | UC75
-// Tables: Shifts
 const router = require('express').Router();
 const authenticate = require('../../auth/middlewares/authenticate');
 const { protect } = require('../../../shared/middlewares/permission.middleware');

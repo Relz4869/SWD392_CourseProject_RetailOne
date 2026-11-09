@@ -13,5 +13,6 @@ const loginSchema = {
 
 router.post('/login', validate(loginSchema), asyncHandler(controller.login));
 router.get('/me', authenticate, asyncHandler(controller.me));
+router.post('/change-password', authenticate, asyncHandler(controller.changePassword));
 
 module.exports = router;

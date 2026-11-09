@@ -12,12 +12,10 @@ class PromotionProduct extends BaseModel {
     variantId:   { type: sql.Int, nullable: true },
   });
 
-  /** UC54 */
   isProductTarget() {
     return this.productId != null;
   }
 
-  /** UC54 */
   isCategoryTarget() {
     return this.categoryId != null;
   }

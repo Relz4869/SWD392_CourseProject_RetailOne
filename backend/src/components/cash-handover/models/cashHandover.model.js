@@ -25,7 +25,6 @@ class CashHandover extends BaseModel {
     reviewNote:   { type: sql.NVarChar(500), nullable: true },
   });
 
-  /** UC82 */
   static fromSchedule(schedule, { systemCash, actualCash, note = null }) {
     return new CashHandover({
       scheduleId: schedule.id,
@@ -37,17 +36,14 @@ class CashHandover extends BaseModel {
     });
   }
 
-  /** UC82 */
   expectedCash() {
     return roundMoney(Number(this.openingCash ?? 0) + Number(this.systemCash ?? 0));
   }
 
-  /** UC82, UC83 */
   difference() {
     return roundMoney(Number(this.actualCash ?? 0) - this.expectedCash());
   }
 
-  /** UC83 */
   hasDiscrepancy() {
     return this.difference() !== 0;
   }

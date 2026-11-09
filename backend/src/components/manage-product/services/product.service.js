@@ -1,6 +1,3 @@
-// Owner: PhuNT | UC42, UC46, UC48
-// Theo mẫu 5 bước ở mục 3.1 của 00_RULES.md:
-// lấy model -> hỏi model -> đổi qua model -> lưu qua repository -> trả model.
 const AppError = require('../../../shared/utils/AppError');
 const { ERRORS } = require('../../../shared/constants/errors');
 const { PRODUCT_ERRORS } = require('../constants/product.errors');

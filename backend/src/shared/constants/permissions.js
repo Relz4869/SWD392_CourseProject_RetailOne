@@ -71,4 +71,16 @@ const ROLE_PERMISSIONS = Object.freeze({
   ]),
 });
 
-module.exports = { PERMISSIONS, PERMISSION_DESCRIPTIONS, ROLE_PERMISSIONS };
+/** Compatibility with existing databases that grant promotion mutations as one feature. */
+function expandPermissions(keys = []) {
+  const granted = Array.isArray(keys) ? keys : [];
+  return [...new Set([
+    ...granted,
+    ...(granted.includes('PROMOTION_MANAGE')
+      ? [P.PROMOTION_CREATE, P.PROMOTION_ASSIGN_PRODUCT, P.PROMOTION_DELETE]
+      : []),
+    ...(granted.includes('STAFF_LOCK') ? [P.STAFF_CHANGE_STATUS] : []),
+  ])];
+}
+
+module.exports = { PERMISSIONS, PERMISSION_DESCRIPTIONS, ROLE_PERMISSIONS, expandPermissions };

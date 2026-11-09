@@ -66,7 +66,7 @@ async function findActiveOptions(tx) {
   const req = await request(tx);
   const result = await req.query(`
     SELECT id, name, parentId, status, imageUrl
-    FROM dbo.Categories
+    FROM dbo.Categories WITH (HOLDLOCK)
     WHERE status = 1
     ORDER BY name;
   `);

@@ -1,5 +1,3 @@
-// Owner: PhuNT | UC39
-// Tables: Categories
 const router = require('express').Router();
 const { authenticate } = require('../../auth');
 const { protect } = require('../../../shared/middlewares/permission.middleware');
